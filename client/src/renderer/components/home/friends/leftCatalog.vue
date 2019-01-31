@@ -1,10 +1,13 @@
 <template>
   <div id="catalog">
+    <div class="search">
+      <input type="text" placeholder="寻找或开始新的对话">
+    </div>
+    <div class="catalog-line"></div>
     <div class="friends" @click="getFriends" :class="{click:friendsClick,friendshover:hover}" @mouseover="friendsHover" @mouseout="outFriends">
       <div class="friends-icon"></div>
       <div class="friends-font" >好友</div>
     </div>
-    <div class="catalog-line"></div>
     <div class="friends-message" :style="messageList">
       <span class="message-title">私信</span>
       <div class="message" :class="{click:chat==index,friendshover:message===index}" @click="goChat(index)"
@@ -54,7 +57,7 @@ export default {
   },
   methods: {
     getStyle(){
-      this.messageList.height=window.innerHeight-90+'px';
+      this.messageList.height=window.innerHeight-130+'px';
     },
     messageHover(index){
       if(this.chat!==index){
@@ -107,11 +110,21 @@ export default {
   color $catalog-font
   background-color $catalog
   border-radius 5px 0 0 5px
-  padding 10px 0
+  padding-top 5px
   & .catalog-line
     margin 5px 0 10px 0
     height 1px
     background-color $home
+.search
+  height 40px
+  padding 5px 10px
+  & input 
+    padding 0 10px
+    width 220px
+    height 30px
+    border 1px solid #26272B
+    border-radius 5px
+    background-color #26272B
 .click
   background-color $content-click
   color #fff

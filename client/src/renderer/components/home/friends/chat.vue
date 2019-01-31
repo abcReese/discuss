@@ -29,7 +29,7 @@ export default {
   margin-left 240px
   height 100%
   background-color $content
-  padding 10px 5px 10px 20px
+  padding 5px 5px 10px 0
 .cutoff
   margin-top 5px
   height 1px

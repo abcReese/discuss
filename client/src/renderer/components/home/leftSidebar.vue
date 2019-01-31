@@ -1,6 +1,6 @@
 <template>
   <div id="left-sidebar" >
-    <div class="home-icon icon" @click="backHome" :class="{current:home}"></div>
+    <div class="home-icon icon" @click="backHome" :class="{current:serverIndex===-1}"></div>
     <div class="line"></div>
     <div class="server">
       <div class="server-list icon" v-for="(item,index) in arr" :key="item" 
@@ -19,18 +19,25 @@ export default {
   data () {
     return {
       arr:['j','k','m','P'],
-      home:true,
-      serverIndex:-1
+      home:true
     }
   },
   components: {
 
   },
+  computed: {
+    serverIndex:{
+      get(){
+        return this.$store.state.serverIndex.index;
+      },
+      set(){
+        
+      }
+    }
+  },
   methods:{
     backHome(){
-      if(this.serverIndex!==-1){
-        this.serverIndex=-1;
-      }
+      this.$store.dispatch('changeIndex',-1);
       this.home=true;
       if(this.$route.path!=='/detail'||this.$route.path!=='/chat'){
          this.$router.push({path:this.$store.state.route.path})
@@ -41,6 +48,7 @@ export default {
         this.home=false;
       }
       this.serverIndex=index;
+      this.$store.dispatch('changeIndex',index);
       this.$router.push({path:'server'});
     }
   }

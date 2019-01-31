@@ -1,6 +1,6 @@
 <template>
-  <div id="server-content">
-    <div class="content-title">#asds</div>
+  <div id="server-content" v-if="serverIndex===index">
+    <div class="content-title">{{name}} {{index}}</div>
     <div class="chat-box">
       <chat-content class='a'></chat-content>
       <!-- <div class="member" :style="member"></div> -->
@@ -19,6 +19,11 @@ export default {
      
     }
   },
+  computed: {
+    serverIndex(){
+      return this.$store.state.serverIndex.index;
+    }
+  },
   components: {
     chatContent,
     chatInput,
@@ -26,15 +31,17 @@ export default {
   },
   methods:{
     
-  }
+  },
+  props:["index","name"]
 }
 </script>
 
 <style lang="stylus">
 #server-content
+  position absolute
   height 100%
   margin-left 240px
-  padding-left 20px
+  // padding-left 20px
   background-color $content
 .content-title
   height 50px

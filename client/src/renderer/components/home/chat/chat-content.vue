@@ -34,7 +34,7 @@ export default {
   },
   methods: {
     getStyle(){
-      this.content.height=window.innerHeight-173+'px';
+      this.content.height=window.innerHeight-174+'px';
     }
   },
   created(){
@@ -48,6 +48,8 @@ export default {
 </script>
 
 <style lang="stylus">
+.content-box
+  padding-left 20px
 .chat-content
   color $content-font
   overflow auto 

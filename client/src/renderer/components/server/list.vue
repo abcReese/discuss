@@ -1,7 +1,7 @@
 <template>
-  <div id="server-leftside">
+  <div id="server-leftside" v-if="serverIndex===listIndex">
     <div class="server-name-box" @click="editServer">
-      <span class="server-name">Server name</span>
+      <span class="server-name">{{name}}</span>
       <div class="arrow" v-if="edit"></div>
       <div class="cancle" v-else></div>
       <ownerset v-if="allow&&owner"></ownerset>
@@ -16,9 +16,10 @@
           <span class="add-channel" v-if="owner">+</span>
         </div>
         <textchanneldetail v-for="(item,index) in textChannel" 
-        @click="goTextChannel"
-        :name="item.name" :index="index"
-        :key=item.name></textchanneldetail>
+        :name="item.name" :index="index" :channelClick="channelClick" 
+        :channelHover="channelHover"
+        :key="item.name" @clickIndex="indexChange"
+        @hoverIndex="hoverChange" @outIndex="outChange"></textchanneldetail>
       </div>
       <div class="channel audi-ochannel">
         <div class="channel-title" @click="showAudio">
@@ -44,6 +45,8 @@ export default {
       owner:true,
       textShow:true,
       audioShow:true,
+      channelClick:-1,
+      channelHover:-1,
       channelList:{
         height:''
       },
@@ -100,6 +103,11 @@ export default {
       audioChannel:[]
     }
   },
+  computed: {
+    serverIndex(){
+      return this.$store.state.serverIndex.index;
+    }
+  },
   components: {
     normolset,
     ownerset,
@@ -118,6 +126,7 @@ export default {
       // `,
       // props:['name','index']
   },
+  props:["name","listIndex"],
   methods:{
     editServer(){
       this.edit=!this.edit;
@@ -130,17 +139,29 @@ export default {
     showAudio(){
       this.audioShow=!this.audioShow;
     },
-    goTextChannel(){
-
+    indexChange(index){
+      this.channelClick=index;
+    },
+    hoverChange(index){
+      if(this.channelClick!==index){
+        this.channelHover=index;
+      }
+    },
+    outChange(){
+      this.channelHover=-1;
     },
     getStyle(){
-      this.channelList.height=window.innerHeight-173+'px';
-    },
+      this.channelList.height=window.innerHeight-123+'px';
+    }
   },
   created(){
     window.addEventListener('resize', this.getStyle);
     this.getStyle();
    },
+  updated(){
+    this.edit=true;
+    this.arrow=false;
+  },
   destroyed(){
      window.removeEventListener('resize', this.getStyle)
    }
@@ -149,8 +170,8 @@ export default {
 
 <style lang="stylus">
 $hover-font=#B9BBBE
-
 #server-leftside
+  position absolute
   float left
   width 240px
   height 100%
@@ -220,6 +241,7 @@ $hover-font=#B9BBBE
       height 5px
       border 1px solid transparent
       transform rotate(45deg)
+      z-index 2
     & .show-all
       left 2px
       top 5px

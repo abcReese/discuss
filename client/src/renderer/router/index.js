@@ -8,7 +8,10 @@ import server from '../components/pages/server.vue'
 import homeContent from '../components/home/rightContent.vue'
 import detail from '../components/home/friends/detail'
 import chat from '../components/home/friends/chat'
-
+import serverSetting from '../components/pages/serverSetting.vue'
+import general from '../components/serverStting/general.vue'
+import member from '../components/serverStting/member.vue'
+import invite from '../components/serverStting/invite.vue'
 Vue.use(Router)
 
 export default new Router({
@@ -49,6 +52,24 @@ export default new Router({
           path:'/server',
           name:'server',
           component:server
+        }
+      ]
+    },
+    {
+      path:'/serversetting',
+      component:serverSetting,
+      children:[
+        {
+          path:'/',
+          component:general
+        },
+        {
+          path:'/member',
+          component:member
+        },
+        {
+          path:'/invite',
+          component:invite
         }
       ]
     }

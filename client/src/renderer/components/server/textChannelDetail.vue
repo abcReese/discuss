@@ -1,5 +1,7 @@
 <template>
-  <div class="channel-detail" >
+  <div class="channel-detail" :class="{aclick:channelClick===index,chover:channelHover==index}"
+  @click="goTextChannel(index)" 
+  @mouseover="hover(index)" @mouseout="channelOut">
     <div class="channel-left">#{{name}}</div>
     <div class="channel-right">
       <div class="create-invite" v-if="inviteIndex===index">创建邀请连接
@@ -39,34 +41,53 @@ export default {
     },
     settingOut(){
       this.settingIndex=-1;
+    },
+    goTextChannel(index){
+      this.$emit("clickIndex",index);
+    },
+    hover(index){
+      this.$emit("hoverIndex",index);
+    },
+    channelOut(){
+      this.$emit("outIndex");
     }
   },
-  props:{
-    name:{
-      type:String
-    },
-    index:{
-      type:Number
-    }
-  }
+  // props:{
+  //   name:{
+  //     type:String
+  //   },
+  //   index:{
+  //     type:Number
+  //   },
+  //   channelClick:{
+  //     type:Number
+  //   }
+  // }
+  props:["name","index","channelClick","channelHover"]
 }
 </script>
 
 <style lang='stylus'>
+.aclick
+  background-color #fff
+.chover
+  
+  color #b3b5b8
+  background-color $content
 .channel-detail
   display flex
   width 220px
+  margin-bottom 2px
+  border-radius 5px
   &:hover
     cursor pointer
-    color #b3b5b8
-    background-color $content
     border-radius 5px
   & .channel-left,& .channel-right
-    height 30px
+    height 35px
   & .channel-left
     width 70%
     padding-left 10px
-    line-height 30px
+    line-height 35px
   & .channel-right
     display flex
     position relative
