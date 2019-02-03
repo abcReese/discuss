@@ -1,6 +1,6 @@
 <template>
   <div id="server-content" v-if="serverIndex===index">
-    <div class="content-title">{{name}} {{index}}</div>
+    <div class="content-title">{{channelName}} {{index}}</div>
     <div class="chat-box">
       <chat-content class='a'></chat-content>
       <!-- <div class="member" :style="member"></div> -->
@@ -22,6 +22,9 @@ export default {
   computed: {
     serverIndex(){
       return this.$store.state.serverIndex.index;
+    },
+    channelName(){
+      return this.$store.state.channelName.name;
     }
   },
   components: {
@@ -38,7 +41,7 @@ export default {
 
 <style lang="stylus">
 #server-content
-  position absolute
+  position relative
   height 100%
   margin-left 240px
   // padding-left 20px

@@ -273,7 +273,10 @@ $offline = #747F8D
         height 35px
         margin-left 10px
         padding 5px
+        border-radius 5px
         background-color $home
+        &:hover
+          background-color #4F545C
       & img 
         position absolute
         top 50%

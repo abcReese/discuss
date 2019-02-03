@@ -1,6 +1,6 @@
 <template>
   <div id="owner-set">
-    <div class="set invite-other">
+    <div class="set invite-other" @click.stop="invite">
       <img src="../../assets/add.svg" alt="">
       <span>邀请其他人</span>
     </div>
@@ -19,22 +19,28 @@
         <span>创建分类</span>
       </div>
     </div>
+    <modal v-show="modal"></modal>
   </div>
 </template>
 
 <script>
+import modal from '../pages/modal'
 export default {
   data () {
     return {
-
+      modal:false
     }
   },
   components: {
-
+    modal
   },
   methods:{
     serverSetting(){
       this.$router.push({path:'serversetting'})
+    },
+    invite(){
+      console.log('00');
+      this.modal=true;
     }
   }
 }
@@ -62,7 +68,7 @@ export default {
     padding 0 15px
     &:hover
       background-color $setting-hover
-      color #B9BBBE
+      color $bright-font
     & span 
       margin-left 30px
     & img 

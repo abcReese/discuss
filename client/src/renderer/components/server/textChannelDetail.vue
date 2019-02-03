@@ -43,6 +43,7 @@ export default {
       this.settingIndex=-1;
     },
     goTextChannel(index){
+      this.$store.dispatch('changeName',this.name+'a');
       this.$emit("clickIndex",index);
     },
     hover(index){
@@ -69,7 +70,8 @@ export default {
 
 <style lang='stylus'>
 .aclick
-  background-color #fff
+  color #fff
+  background-color $content-click
 .chover
   
   color #b3b5b8

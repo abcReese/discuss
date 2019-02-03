@@ -12,6 +12,8 @@ import serverSetting from '../components/pages/serverSetting.vue'
 import general from '../components/serverStting/general.vue'
 import member from '../components/serverStting/member.vue'
 import invite from '../components/serverStting/invite.vue'
+import userSetting from '../components/pages/userSetting.vue'
+
 Vue.use(Router)
 
 export default new Router({
@@ -72,6 +74,11 @@ export default new Router({
           component:invite
         }
       ]
+    },
+    {
+      path:'/usersetting',
+      name:'usersetting',
+      component:userSetting
     }
   ]
 })

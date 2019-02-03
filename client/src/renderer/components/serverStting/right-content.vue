@@ -16,7 +16,7 @@
 export default {
   data () {
     return {
-
+    
     }
   },
   components: {
@@ -38,6 +38,22 @@ export default {
   width 75%
   padding 60px 110px 0 40px
   background-color $content
+  overflow-x hidden
+  overflow-y scroll 
+  &::-webkit-scrollbar 
+    width 8px
+    height 8px
+    margin 4px
+    background-color $catalog
+    border-radius 10px
+  &::-webkit-scrollbar-track
+    -webkit-box-shadow inset 0 0 6px rgba(0,0,0,0.3)
+    border-radius 10px
+    background-color: $catalog
+  &::-webkit-scrollbar-thumb
+    border-radius 10px
+    -webkit-box-shadow inset 0 0 6px rgba(0,0,0,.3)
+    background-color $home
   & .setting-detail
     position absolute
     top 60px

@@ -1,23 +1,65 @@
 <template>
-  <div>
-    成员
+  <div class="setting-member">
+    <h3>服务器成员</h3>
+    <div class="sum">成员</div>
+    <!-- <div class="list">
+      <div class="member-detail" >
+        <div class="user-info">
+          <div class="avatar">
+            <img src="../../assets/default-avatar.png" alt="">
+          </div>
+          <div class="name">
+            <div>sdasdasd</div>
+            <div>aaaa</div>
+          </div>
+          <div class="server-owner">
+            <img src="../../assets/setting-crown.svg" alt="">
+          </div>
+        </div>
+        <div class="operate-btn">
+          踢出服务器
+        </div>
+      </div>
+    </div> -->
+    <list>
+      <div class="server-owner" slot="crown">
+        <img src="../../assets/setting-crown.svg" alt="">
+      </div>
+      <div class="operate-btn" slot="operate">
+          踢出服务器
+      </div>
+    </list>
   </div>
 </template>
 
 <script>
+import list from './member-list'
 export default {
   data () {
     return {
-
+    
     }
   },
   components: {
-
+    list
   }
 }
 </script>
 
 <style lang='stylus'>
-
- 
+.setting-member
+  color $bright-font
+  & h3
+    margin 10px 0
+  & .operate-btn
+      height 30px
+      padding 0 5px
+      line-height 30px
+      font-size 15px
+      text-align center
+      border 1px solid $home
+      background-color $delete-red
+      border-radius 5px
+      &:hover
+        cursor pointer
 </style>

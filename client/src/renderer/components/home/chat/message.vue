@@ -27,7 +27,7 @@ export default {
 <style lang="stylus">
 .chat-message
   min-height 80px
-  padding 20px 0
+  padding 20px 10px 20px 0
   border-bottom 1px solid $chat-cutoff
   &>div
     min-height 40px

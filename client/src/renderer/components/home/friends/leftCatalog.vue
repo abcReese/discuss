@@ -57,7 +57,7 @@ export default {
   },
   methods: {
     getStyle(){
-      this.messageList.height=window.innerHeight-130+'px';
+      this.messageList.height=window.innerHeight-180+'px';
     },
     messageHover(index){
       if(this.chat!==index){
@@ -106,11 +106,11 @@ export default {
 #catalog
   float left
   width 240px
-  height 100%
+  // height 100%
   color $catalog-font
   background-color $catalog
   border-radius 5px 0 0 5px
-  padding-top 5px
+  padding-top 10px
   & .catalog-line
     margin 5px 0 10px 0
     height 1px
@@ -152,7 +152,7 @@ export default {
     font-size 17px;
     line-height 19px
 .friends-message
-  padding 0 10px
+  padding  10px
   overflow auto
   &::-webkit-scrollbar /*滚动条整体样式*/
   display none

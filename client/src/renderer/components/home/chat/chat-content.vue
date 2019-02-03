@@ -33,9 +33,21 @@ export default {
     chatInput
   },
   methods: {
+    scrollToBottom(){
+      this.$nextTick(() => {
+	    var container = this.$el.querySelector(".chat-content");
+        container.scrollTop = container.scrollHeight;
+     })
+    },
     getStyle(){
       this.content.height=window.innerHeight-174+'px';
     }
+  },
+  mounted () {
+    this.scrollToBottom();
+  },
+  updated:function(){
+    this.scrollToBottom();
   },
   created(){
      window.addEventListener('resize', this.getStyle);

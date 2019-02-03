@@ -174,7 +174,7 @@ $hover-font=#B9BBBE
   position absolute
   float left
   width 240px
-  height 100%
+  // height 100%
   border-radius 5px 0 0 5px
 .server-name-box
   position relative
