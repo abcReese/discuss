@@ -2,7 +2,7 @@
   <div id="detail">
     <div class="friends-manage">
       <div class="add-friends">
-        <div class="friends-manage-btn ">添加好友</div>
+        <div class="friends-manage-btn " @click='addFriends'>添加好友</div>
       </div>
       <div class="friends-status">
         <div class="friends-manage-btn" 
@@ -45,10 +45,15 @@
         </div>
       </div>
     </div>
+     <modal v-show="modal" >
+       <addFriends v-if="name=='addFriends'"></addFriends>
+    </modal>
   </div>
 </template>
 
 <script>
+import modal from '../../pages/modal'
+import addFriends from '../../modal/addFriend'
 export default {
   data () {
     return {
@@ -112,8 +117,17 @@ export default {
       }
     }
   },
+  computed:{
+    modal(){
+      return this.$store.state.modal.modal
+    },
+    name(){
+      return this.$store.state.modal.name
+    }
+  },
   components: {
-
+    modal,
+    addFriends
   },
   methods: {
     getStyle(){
@@ -136,11 +150,15 @@ export default {
     },
     infoOut(){
       this.hover=-1;
+    },
+    addFriends(){
+      this.$store.dispatch('changeStatus',{modal:true,name:'addFriends'})
     }
   },
   created(){
      window.addEventListener('resize', this.getStyle);
-     this.getStyle()
+     this.getStyle();
+     this.$store.dispatch('initModal')
    },
   destroyed(){
      window.removeEventListener('resize', this.getStyle)

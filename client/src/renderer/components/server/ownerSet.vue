@@ -10,38 +10,65 @@
         <img src="../../assets/add.svg" alt="">
         <span>服务器设置</span>
       </div>
-      <div class="set server-setting">
+      <div class="set server-setting" @click.stop="createChannel">
         <img src="../../assets/add.svg" alt="">
         <span>新建频道</span>
       </div>
-      <div class="set server-setting">
-        <img src="../../assets/add.svg" alt="">
+      <div class="set server-setting" @click.stop="createClassify">
+        <img src="../../assets/add.svg" alt="" >
         <span>创建分类</span>
       </div>
     </div>
-    <modal v-show="modal"></modal>
+    <modal v-show="modal" >
+      <createChannel v-if="name=='createChannel'" :choosed="choosed"></createChannel>
+      <createClassify v-if="name=='createClassify'"></createClassify>
+      <invite v-if="name=='inviteToServer'"></invite>
+    </modal>
   </div>
 </template>
 
 <script>
 import modal from '../pages/modal'
+import createChannel from '../modal/createChannel'
+import createClassify from '../modal/createClassify'
+import invite from '../modal/inviteToserver'
 export default {
   data () {
     return {
-      modal:false
+      choosed:1
+    }
+  },
+  computed: {
+    modal(){
+      return this.$store.state.modal.modal
+    },
+    name(){
+      return this.$store.state.modal.name
     }
   },
   components: {
-    modal
+    modal,
+    createChannel,
+    createClassify,
+    invite
   },
   methods:{
     serverSetting(){
       this.$router.push({path:'serversetting'})
     },
     invite(){
-      console.log('00');
-      this.modal=true;
+      this.$store.dispatch('changeStatus',{modal:true,name:'inviteToServer'});
+    },
+    createChannel(){
+      this.$store.dispatch('changeStatus',{modal:true,name:'createChannel'});
+    },
+    createClassify(){
+      this.$store.dispatch('changeStatus',{modal:true,name:'createClassify'});
     }
+  },
+
+  created(){
+    this.$store.dispatch('initModal');
   }
 }
 </script>

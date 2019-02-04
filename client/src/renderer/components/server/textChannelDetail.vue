@@ -7,18 +7,29 @@
       <div class="create-invite" v-if="inviteIndex===index">创建邀请连接
         <div class="invite-arrow"></div>
       </div>
-      <div class="add" @mouseover="invite(index)" @mouseout="inviteOut()">
+      <div class="add" @mouseover="invite(index)" 
+      @mouseout="inviteOut()"
+      @click="deleteChannel">
       </div>
       <div class="channel-setting" v-if="settingIndex===index">编辑频道
         <div class="setting-arrow"></div>
       </div>
-      <div class="setting" @mouseover="setting(index)" @mouseout="settingOut()">
+      <div class="setting" @mouseover="setting(index)" 
+      @mouseout="settingOut()"
+      @click="edit">
       </div>
     </div>
+    <modal v-show="modal">
+      <editChannel v-if="mname==='editChannel'"></editChannel>
+      <delete-channel v-if="mname==='deleteChannel'"></delete-channel>
+    </modal>
   </div>
 </template>
 
 <script>
+import modal from '../pages/modal'
+import editChannel from '../modal/editChannel'
+import deleteChannel from '../modal/deleteChannel'
 export default {
   data () {
     return {
@@ -26,8 +37,18 @@ export default {
       settingIndex:-1
     }
   },
+  computed: {
+    modal(){
+      return this.$store.state.modal.modal
+    },
+    mname(){
+      return this.$store.state.modal.name
+    }
+  },
   components: {
-
+    modal,
+    editChannel,
+    deleteChannel
   },
   methods:{
     invite(index){
@@ -51,6 +72,12 @@ export default {
     },
     channelOut(){
       this.$emit("outIndex");
+    },
+    edit(){
+      this.$store.dispatch('changeStatus',{modal:true,name:'editChannel'});
+    },
+    deleteChannel(){
+      this.$store.dispatch('changeStatus',{modal:true,name:'deleteChannel'});
     }
   },
   // props:{

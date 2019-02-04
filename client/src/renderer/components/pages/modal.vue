@@ -1,6 +1,8 @@
 <template>
   <div class="modal-backdrop" :style="modalStyle" @click="close">
-    <div class="modal" @click.stop="a"></div>
+    <div class="modal" @click.stop="a">
+      <slot></slot>
+    </div>
   </div>
 </template>
 
@@ -52,7 +54,26 @@ export default {
   z-index 99
   & .modal
     border-radius 5px
-    width 450px
-    height 300px
     background-color $modal
+    color $bright-font
+    & .title
+      font-size 13px
+      height 30px
+      line-height 30px
+      color $channel-list
+    & input 
+      width 400px
+      height 40px
+      padding 0 10px
+      font-size 20px
+      color $bright-font
+      border 1px solid $home
+      background-color #303339
+      border-radius 5px
+      &:hover
+        border 1px solid #000
+        
+      &:focus
+        outline none 
+        border-color $main-blue
 </style>

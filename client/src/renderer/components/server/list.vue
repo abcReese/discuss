@@ -13,7 +13,7 @@
           <span class="show-all" v-if="textShow"></span>
           <span class="hide" v-else></span>
           <span class="text">文字频道</span>
-          <span class="add-channel" v-if="owner">+</span>
+          <span class="add-channel" v-if="owner" @click.stop="newTextChannel">+</span>
         </div>
         <textchanneldetail v-for="(item,index) in textChannel" 
         :name="item.name" :index="index" :channelClick="channelClick" 
@@ -26,10 +26,13 @@
           <span class="show-all" v-if="audioShow"></span>
           <span class="hide" v-else></span>
           <span class="text">语音频道</span>
-          <span class="add-channel" v-if="owner">+</span>
+          <span class="add-channel" v-if="owner" @click.stop="newAudioChannel">+</span>
         </div>
       </div>
     </div>
+    <modal v-show="modal&&allowModal" >
+      <createChannel v-if="mname=='createChannel'" :choosed="choosed"></createChannel>
+    </modal>
   </div>
 </template>
 
@@ -37,16 +40,20 @@
 import normolset from './normolSet'
 import ownerset from './ownerSet'
 import textchanneldetail from './textChannelDetail'
+import modal from '../pages/modal'
+import createChannel from '../modal/createChannel'
 export default {
   data () {
     return {
       edit:true,
       allow:false,
+      allowModal:false,
       owner:true,
       textShow:true,
       audioShow:true,
       channelClick:-1,
       channelHover:-1,
+      choosed:1,
       channelList:{
         height:''
       },
@@ -106,35 +113,43 @@ export default {
   computed: {
     serverIndex(){
       return this.$store.state.serverIndex.index;
+    },
+    modal(){
+      return this.$store.state.modal.modal
+    },
+    mname(){
+      return this.$store.state.modal.name
     }
   },
   components: {
     normolset,
     ownerset,
-    textchanneldetail
-      // template:`
-      //   <div class="channel-detail">
-      //     <div class="channel-left">#{{name}}</div>
-      //     <div class="channel-right">
-      //       <div class="create-invite">创建邀请连接</div>
-      //       <div class="add">
-      //       </div>
-      //       <div class="setting">
-      //       </div>
-      //     </div>
-      //   </div>
-      // `,
-      // props:['name','index']
+    textchanneldetail,
+    modal,
+    createChannel
+     
   },
   props:["name","listIndex"],
   methods:{
     editServer(){
       this.edit=!this.edit;
       this.allow=!this.allow;
+      this.allowModal=false;
+      this.$store.dispatch('initModal');
     },
     showText(){
       this.textShow=!this.textShow;
 
+    },
+    newTextChannel(){
+      this.allowModal=true
+      this.choosed=1;
+      this.$store.dispatch('changeStatus',{modal:true,name:'createChannel'});
+    },
+    newAudioChannel(){
+      this.allowModal=true
+      this.choosed=2;
+      this.$store.dispatch('changeStatus',{modal:true,name:'createChannel'});
     },
     showAudio(){
       this.audioShow=!this.audioShow;
