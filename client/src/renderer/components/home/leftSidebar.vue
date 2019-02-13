@@ -3,27 +3,27 @@
     <div class="home-icon icon" @click="backHome" :class="{current:serverIndex===-1}"></div>
     <div class="line"></div>
     <div class="server">
-      <div class="server-list icon" v-for="(item,index) in arr" :key="item" 
+      <div class="server-list icon" v-for="(item,index) in services" :key="item.gid" 
       :class="{current:serverIndex===index}" @click="goServer(index)">
-        {{item}}
+        {{item.serverName[0]}}
       </div>
-      <div class="addserver-button">
+      <div class="addserver-button" @click="createServer">
         +
       </div>
     </div>
+    <modal v-if="modal"><create-server name="createServer"></create-server></modal>
   </div>
 </template>
 
 <script>
+import modal from '../pages/modal'
+import createServer from '../modal/createServer'
 export default {
   data () {
     return {
-      arr:['j','k','m','P'],
-      home:true
+      home:true,
+      arr:[]
     }
-  },
-  components: {
-
   },
   computed: {
     serverIndex:{
@@ -33,7 +33,17 @@ export default {
       set(){
         
       }
+    },
+    services(){
+      return this.$store.state.category.category.services;
+    },
+    modal(){
+      return this.$store.state.modal.modal
     }
+  },
+  components:{
+    modal,
+    createServer
   },
   methods:{
     backHome(){
@@ -50,6 +60,9 @@ export default {
       this.serverIndex=index;
       this.$store.dispatch('changeIndex',index);
       this.$router.push({path:'server'});
+    },
+    createServer(){
+      this.$store.dispatch('changeStatus',{modal:true,name:'createServer'})
     }
   }
 }

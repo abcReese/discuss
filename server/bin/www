@@ -7,7 +7,8 @@
 var app = require('../app');
 var debug = require('debug')('demo:server');
 var http = require('http');
-
+const socket = require('socket.io');
+const controllers = require('../controllers');
 /**
  * Get port from environment and store in Express.
  */
@@ -20,7 +21,8 @@ var port = normalizePort(process.env.PORT || '3000');
  */
 
 var server = http.createServer(app.callback());
-
+const io=socket(server);
+global.$sockets = io.sockets.sockets;
 /**
  * Listen on provided port, on all network interfaces.
  */
@@ -88,3 +90,14 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
+
+//监听socket
+io.on('connection',function(socket){
+  Object.keys(controllers)
+    .forEach(module => {
+      Object.keys(controllers[module])
+        .forEach(key => {
+          socket.on(key, controllers[module][key]);
+        });
+    });
+})

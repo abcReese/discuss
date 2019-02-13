@@ -7,7 +7,8 @@ const UserSchema=mongoose.Schema({
   password:{type:String,require:true},
   avatar:{type:String,default:'http://localhost:3000/upload/default/default-user-avatar.png'},
   isOnline:Boolean,
-  services:Array
+  services:Array,
+  friedns:Array
 },{
   timestamps:true,
 })
@@ -50,6 +51,10 @@ UserSchema.statics={
     let update = { $set: {isOnline : true}};
     this.updateOne(condition,update).exec();
     return 'success';
+  },
+  async getUserInfo(email){
+    let user=await this.where('email').equals(email).exec();
+    return user[0];
   }
 }
 module.exports = mongoose.model('User', UserSchema);

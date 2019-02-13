@@ -1,7 +1,7 @@
 <template>
   <div class="channel-btn">
       <div @click.stop="cancle">取消</div>
-      <button><slot></slot></button>
+      <button @click="emitParent"><slot></slot></button>
     </div>
 </template>
 
@@ -18,8 +18,13 @@ export default {
   methods:{
     cancle(){
       this.$store.dispatch('initModal')
+    },
+    emitParent(){
+      console.log(this.eventName);
+      this.$emit(this.eventName);
     }
-  }
+  },
+  props:['eventName']
 }
 </script>
 

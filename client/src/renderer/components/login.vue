@@ -42,6 +42,13 @@ export default {
         })
         .then(function (response) {
           if(response.data.status==='success'){
+            self.$socket.emit('getUserInfo',self.email,data=>{
+              self.$store.dispatch('setUser',data);
+            });
+            self.$socket.emit('getCategory',self.email,data=>{
+              console.log(data);
+              self.$store.dispatch('setCategory',data);
+            })
             self.$router.push({path:'/home'});
           }else{
             console.log(response.data.status)
@@ -54,7 +61,8 @@ export default {
   },
   components: {
 
-  }
+  },
+  
 }
 </script>
 

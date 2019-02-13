@@ -10,6 +10,8 @@ const dbConnection=mongoose.connection;
 //解决跨域问题
 const cors = require('koa2-cors');
 
+
+
 //引入中间件
 const middleware=require('./middleware');
 middleware(app)
@@ -32,8 +34,7 @@ dbConnection.once('open', () => {
   console.log('Database: connect success');
 });
 
-
-
+//socket.io连接
 
 // error handler
 onerror(app)
@@ -46,5 +47,6 @@ app.use(users.routes(), users.allowedMethods())
 app.on('error', (err, ctx) => {
   console.error('server error', err, ctx)
 });
+
 
 module.exports = app

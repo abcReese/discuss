@@ -45,7 +45,7 @@
         </div>
       </div>
     </div>
-     <modal v-show="modal" >
+     <modal v-show="allowModal&&modal" >
        <addFriends v-if="name=='addFriends'"></addFriends>
     </modal>
   </div>
@@ -61,60 +61,12 @@ export default {
       statusIndex:0,
       hoverIndex:-1,
       arr:[],
-      friends:[{
-        avatar:this.$url+'/images/default/default-avatar.png',
-        name:'aaaa',
-        status:''
-      },
-      {
-        avatar:this.$url+'/images/default/default-avatar.png',
-        name:'adsdab',
-        status:''
-      },
-      {
-        avatar:this.$url+'/images/default/default-avatar.png',
-        name:'sda',
-        status:''
-      },
-      {
-        avatar:this.$url+'/images/default/default-avatar.png',
-        name:'das',
-        status:''
-      },
-      {
-        avatar:this.$url+'/images/default/default-avatar.png',
-        name:'dsad',
-        status:''
-      },
-      {
-        avatar:this.$url+'/images/default/default-avatar.png',
-        name:'s',
-        status:''
-      },
-      {
-        avatar:this.$url+'/images/default/default-avatar.png',
-        name:'wesad',
-        status:''
-      },
-      {
-        avatar:this.$url+'/images/default/default-avatar.png',
-        name:'dsadd',
-        status:''
-      },
-      {
-        avatar:this.$url+'/images/default/default-avatar.png',
-        name:'wef',
-        status:''
-      },
-      {
-        avatar:this.$url+'/images/default/default-avatar.png',
-        name:'weawaff',
-        status:''
-      }],
+      friends:[],
       hover:-1,
       content:{
         height:''
-      }
+      },
+      allowModal:false
     }
   },
   computed:{
@@ -152,6 +104,7 @@ export default {
       this.hover=-1;
     },
     addFriends(){
+      this.allowModal=true;
       this.$store.dispatch('changeStatus',{modal:true,name:'addFriends'})
     }
   },

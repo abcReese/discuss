@@ -34,17 +34,7 @@ export default {
         height:''
       },
       message:-1,
-      arr:[
-        {
-        nickname:'aaa'
-      }
-      ],
-      friendsMessages:[{
-        nickname:'aaa'
-      },
-      {
-        nickname:'bbb'
-      }],
+      friendsMessages:[],
       friendsClick:true,
       hover:false,
       chat:-1,
