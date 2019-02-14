@@ -1,7 +1,7 @@
 <template>
   <div id="server-leftside" v-if="serverIndex===listIndex">
     <div class="server-name-box" @click="editServer">
-      <span class="server-name">{{name}}</span>
+      <span class="server-name">a</span>
       <div class="arrow" v-if="edit"></div>
       <div class="cancle" v-else></div>
       <ownerset v-if="allow&&owner"></ownerset>
@@ -51,61 +51,14 @@ export default {
       owner:true,
       textShow:true,
       audioShow:true,
-      channelClick:-1,
+      channelClick:0,
       channelHover:-1,
       choosed:1,
       channelList:{
         height:''
       },
       textChannel:[
-        {
-        name:'sdasd'
-        },
-        {
-        name:'sdsafg1'
-        },
-        {
-        name:'sdsafg2'
-        },
-        {
-          name:'sdsafg3'
-        },
-        {
-          name:'sdsafg4'
-        },
-        {
-          name:'sdsafg5'
-        },
-        {
-          name:'sdsafg6'
-        },
-        {
-          name:'sdsafg7'
-        },
-        {
-          name:'sdsafg8'
-        },
-        {
-          name:'sdsafg9'
-        },
-        {
-          name:'sdsafg12'
-        },
-        {
-          name:'sdsafg13'
-        },
-        {
-          name:'sdsafg15'
-        },
-        {
-          name:'sdsafg152'
-        },
-        {
-          name:'sdsafg51'
-        },
-        {
-          name:'sdsafg21'
-        }
+        
       ],
       audioChannel:[]
     }

@@ -91,6 +91,10 @@ function onListening() {
   debug('Listening on ' + bind);
 }
 
+global.$userHash = {};
+global.$sockets = io.sockets.sockets;
+
+let userHash = global.$userHash;
 //监听socket
 io.on('connection',function(socket){
   Object.keys(controllers)
@@ -100,4 +104,30 @@ io.on('connection',function(socket){
           socket.on(key, controllers[module][key]);
         });
     });
+  socket.on('userConnect', function(email,callback) {
+    console.log(userHash);
+    userHash[email] = socket.id;
+    console.log(email+'succeed connect');
+    console.log(userHash);
+    callback();
+  });
+  //监听客户端正常断开连接
+  socket.on('userDisconnect', function(email) {
+    delete userHash[email];
+
+    console.log(email+' disconnect');
+  });
+  //监听客户端异常断开连接
+  socket.on('disconnect', function() {
+    let email = '';
+    Object.keys(userHash)
+      .find(key => {
+        if (userHash[key] === socket.id) {
+          email = key;
+          return true;
+        }
+      });
+
+    delete userHash[email];
+  });
 })

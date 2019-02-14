@@ -6,5 +6,5 @@ async function getUserInfo(email,callback){
 }
 
 module.exports={
-  getUserInfo
+  getUserInfo,
 }

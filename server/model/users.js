@@ -5,10 +5,8 @@ const UserSchema=mongoose.Schema({
   nickname:{type:String,maxlength:20},
   nicknameCount:{type:String},
   password:{type:String,require:true},
-  avatar:{type:String,default:'http://localhost:3000/upload/default/default-user-avatar.png'},
-  isOnline:Boolean,
-  services:Array,
-  friedns:Array
+  avatar:{type:String,default:'http://localhost:3000/images/default/default-avatar.png'},
+  isOnline:Boolean
 },{
   timestamps:true,
 })
@@ -17,6 +15,12 @@ UserSchema.statics={
   async register(user){
     let data=await this.where('email').equals(user.email).exec();
     data=data[0];
+    let doc={
+      email:user.email,
+      nickname:user.nickname,
+      password:user.password,
+      isOnline:false
+    }
     //如果该邮箱没有注册过就进行注册并返回true，否则返回false.
     if(!data){
       let users=await this.where('nickname').equals(user.nickname).exec();
@@ -28,10 +32,10 @@ UserSchema.statics={
         for(let i=0;i<4-count.length;i++){
           count+='0'+count;
         }
-        user.nicknameCount=count;
+        doc.nicknameCount=count;
       }
-      console.log(user);
-      data=new this(user);
+      console.log(doc);
+      data=new this(doc);
       await data.save();
       return true;
     }else{

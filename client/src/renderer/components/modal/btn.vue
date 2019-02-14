@@ -20,7 +20,6 @@ export default {
       this.$store.dispatch('initModal')
     },
     emitParent(){
-      console.log(this.eventName);
       this.$emit(this.eventName);
     }
   },

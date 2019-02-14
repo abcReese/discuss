@@ -5,7 +5,7 @@
         <div class="option">
           我的账户
         </div>
-        <div class="log-out" >登出</div>
+        <div class="log-out" @click="logOut">登出</div>
       </div>
     </div>
     <div class="setting-right">
@@ -41,6 +41,11 @@ export default {
       ]
     }
   },
+  computed: {
+    email(){
+      return this.$store.state.user.user.email;
+    }
+  },
   components: {
     showSetting,
     editSetting
@@ -58,6 +63,10 @@ export default {
     getStyle(){
       this.settingStyle.height=window.innerHeight-23+'px';
       this.settingStyle.width=window.innerWidth+'px';
+    },
+    logOut(){
+      this.$router.push({path:'/'});
+      this.$socket.emit('userDisconnect',this.email);
     }
   },
   created(){

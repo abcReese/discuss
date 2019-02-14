@@ -42,6 +42,9 @@ export default {
         })
         .then(function (response) {
           if(response.data.status==='success'){
+            self.$socket.emit('userConnect',self.email ,data=>{
+              console.log("connect");
+            });
             self.$socket.emit('getUserInfo',self.email,data=>{
               self.$store.dispatch('setUser',data);
             });

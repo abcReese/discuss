@@ -21,7 +21,7 @@
     </div>
     <div class="show-friends-content" :style="content">
       <div class="friends-info" 
-        v-for="(item,index) in friends" :key="item.name" 
+        v-for="(item,index) in friendsArr" :key="item.name" 
          
         @mouseover="infoHover(index)" 
         @mouseout="infoOut()">
@@ -29,18 +29,30 @@
           <div class="avatar">
             <img :src=item.avatar alt="头像">
           </div>
-          <div class="nickname">{{item.name}}</div>
+          <div class="nickname">{{item.nickname}}</div>
         </div>
         <div class="middle info-box">
-          <div class="circle"></div>
-          <div class="status">离线</div>
+          <div class="circle" :class="{online:item.isOnline}"></div>
+          <div class="status" v-if="item.isOnline">在线</div>
+          <div class="status" v-else>离线</div>
         </div>
         <div class="right info-box"  :class="{friend:hover==index}">
-          <div class="video">
-            <img src="../../../assets/video.png" alt="">
+          <div class="already-friend friend-operate" v-if="already">
+            <div class="video container">
+              <img src="../../../assets/video.png" alt="">
+            </div>
+            <div class="audio container">
+              <img src="../../../assets/audio.png" alt="">
+            </div>
           </div>
-          <div class="audio">
-            <img src="../../../assets/audio.png" alt="">
+          <div class="auditing-friend friend-operate" v-else>
+            <div class="container accept" >
+              ✔
+            </div>
+            <div class="container reject" >
+              <div class="left-line line"></div>
+              <div class="right-line line"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -60,8 +72,9 @@ export default {
       friendsStatus:['所有','在线','待审核'],
       statusIndex:0,
       hoverIndex:-1,
-      arr:[],
-      friends:[],
+      friendsArr:[],
+      already:true,
+      auditing:true,
       hover:-1,
       content:{
         height:''
@@ -75,6 +88,15 @@ export default {
     },
     name(){
       return this.$store.state.modal.name
+    },
+    allFriends(){
+      return this.$store.state.category.category.friends.all;
+    },
+    onlineFriends(){
+      return this.$store.state.category.category.friends.online;
+    },
+    auditingFriends(){
+      return this.$store.state.category.category.friends.auditing;
     }
   },
   components: {
@@ -88,6 +110,19 @@ export default {
     getStatus(index){
       this.statusIndex=index;
       this.hoverIndex=-1;
+      if(index==0){
+        this.already=true;
+        this.auditing=false;
+        this.friendsArr=this.allFriends;
+      }else if(index==1){
+        this.already=true;
+        this.auditing=false;
+        this.friendsArr=this.onlineFriends;
+      }else{
+        this.friendsArr=this.auditingFriends;
+        this.already=false;
+        this.auditing=true;
+      }
     },
     hoverStyle(index){
       if(this.statusIndex!==index){
@@ -112,7 +147,8 @@ export default {
      window.addEventListener('resize', this.getStyle);
      this.getStyle();
      this.$store.dispatch('initModal')
-   },
+     this.friendsArr=this.$store.state.category.category.friends.all;
+  },
   destroyed(){
      window.removeEventListener('resize', this.getStyle)
    }
@@ -232,27 +268,50 @@ $offline = #747F8D
         height 10px
         border-radius 50%
         background-color $offline
+      & .online
+        background-color $online
       & .status
         padding-left 10px
     & .right
       display none
       width 20%
       justify-content flex-end
-      & div
-        position relative
-        width 35px
-        height 35px
-        margin-left 10px
-        padding 5px
-        border-radius 5px
-        background-color $home
-        &:hover
-          background-color #4F545C
-      & img 
-        position absolute
-        top 50%
-        left 50%
-        transform: translate(-50%,-50%);
+      & .friend-operate
+        display flex
+        justify-content space-around
+        align-items center
+        & .container
+          position relative
+          width 35px
+          height 35px
+          margin-left 10px
+          padding 5px
+          border-radius 5px
+          background-color $home
+          &:hover
+            background-color #4F545C
+          & img 
+            position absolute
+            top 50%
+            left 50%
+            transform: translate(-50%,-50%);
+          & .line
+            position absolute
+            top 12px
+            left 10px
+            height 2px
+            width 15px
+            background-color #fff
+          & .left-line
+            transform rotate(45deg)
+          & .right-line
+            transform rotate(-45deg)
+        & .accept
+          color #fff
+          &:hover
+            background-color $online
+        & .reject:hover
+          background-color $delete-red
     & .friend
         display flex
 </style>

@@ -48,13 +48,14 @@ export default {
     },
     submit(){
       let reg= new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$");
+      let self=this;
       if(this.email&&this.username&&this.password&&this.code&&reg.test(this.email)){
         this.$http({        
           method : 'post',
           url : 'http://localhost:3000/users/signin',
           data : {
             email : this.email,
-            username : this.username,
+            nickname : this.username,
             password : this.password,
             code : this.code
           }
@@ -70,7 +71,7 @@ export default {
             case 'codeWrong':
               console.log('wrong');
           }
-          this.$store.dispatch('changeShow');
+          self.$store.dispatch('changeShow');
         })
       }else{
         this.$refs.email.focus();

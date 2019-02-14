@@ -1,17 +1,22 @@
 const state = {
-  category:{}
+  category:{
+    
+  }
 };
 
 const mutations = {
   setCategory(state,category){
     state.category=category;
-    console.log(category);
+
   },
   addServer(state,server){
     state.category.services.push(server);
   },
-  addFriend(state,friend){
-    state.category.friends.push(friend);
+  addAuditing(state,friend){
+    state.category.friends.auditing.push(friend);
+  },
+  initCategory(state){
+    state.category={};
   }
 };
 const actions = {
@@ -21,8 +26,11 @@ const actions = {
   addServer(context,server){
     context.commit('addServer',server);
   },
-  addFriend(context,friend){
-    context.commit('addFriend',friend);
+  addAuditing(context,friend){
+    context.commit('addAuditing',friend);
+  },
+  initCategory(context){
+    context.commit('initCategory');
   }
 }
 export default {

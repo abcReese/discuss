@@ -14,7 +14,11 @@ CategorySchema.statics={
         userEmail:email,
         categories: {
             services: [],
-            friends: []
+            friends:{
+              all:[],
+              online:[],
+              auditing:[]
+            }
         }
       })
       await category.save();
