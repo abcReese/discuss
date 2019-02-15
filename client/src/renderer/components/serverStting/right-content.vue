@@ -1,9 +1,7 @@
 <template>
   <div class="setting-right">
     <div class="setting-detail">
-      <keep-alive>
         <router-view></router-view>
-      </keep-alive>
       <div class="esc" @click="back">
         <div class="left-line"></div>
         <div class="right-line"></div>

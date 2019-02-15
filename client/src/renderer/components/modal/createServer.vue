@@ -8,7 +8,7 @@
     </div>
     </div>
     <btn :eventName="'createServer'"
-    @createServer="createServer">创建</btn>
+    @createServer="createServer" @ban="ban">创建</btn>
   </div>
 </template>
 
@@ -34,6 +34,9 @@ export default {
         this.$store.dispatch('addServer',data);
         this.$store.dispatch('initModal')
       })
+    },
+    ban(){
+      this.$emit('banModal')
     }
   }
 }

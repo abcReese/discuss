@@ -44,7 +44,7 @@
     },
     created(){
       window.addEventListener('resize', this.getStyle);
-      this.getStyle()
+      this.getStyle();
     },
 
     destroyed(){

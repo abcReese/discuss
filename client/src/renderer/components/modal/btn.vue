@@ -18,9 +18,11 @@ export default {
   methods:{
     cancle(){
       this.$store.dispatch('initModal')
+      this.$emit('ban');
     },
     emitParent(){
       this.$emit(this.eventName);
+      this.$emit('ban');
     }
   },
   props:['eventName']

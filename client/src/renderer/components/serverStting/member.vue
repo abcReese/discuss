@@ -21,7 +21,9 @@
         </div>
       </div>
     </div> -->
-    <list>
+    <list v-for="(item,index) in services[serverIndex].members" 
+    :key="index"
+    :member=item>
       <div class="server-owner" slot="crown">
         <img src="../../assets/setting-crown.svg" alt="">
       </div>
@@ -38,6 +40,14 @@ export default {
   data () {
     return {
     
+    }
+  },
+  computed: {
+    serverIndex(){
+      return this.$store.state.serverIndex.index;
+    },
+    services(){
+      return this.$store.state.category.category.services;
     }
   },
   components: {

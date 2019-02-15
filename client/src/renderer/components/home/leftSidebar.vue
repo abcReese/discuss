@@ -5,13 +5,13 @@
     <div class="server">
       <div class="server-list icon" v-for="(item,index) in services" :key="item.gid" 
       :class="{current:serverIndex===index}" @click="goServer(index)">
-        {{item.serverName[0]}}
+        <img :src="services[index].avatar" alt="">
       </div>
       <div class="addserver-button" @click="createServer">
         +
       </div>
     </div>
-    <modal v-if="modal"><create-server name="createServer"></create-server></modal>
+    <modal v-if="allowA&&modal"><create-server v-if="name=='createServer'" @banModal="banModal"></create-server></modal>
   </div>
 </template>
 
@@ -22,7 +22,8 @@ export default {
   data () {
     return {
       home:true,
-      arr:[]
+      arr:[],
+      allowA:false
     }
   },
   computed: {
@@ -39,7 +40,10 @@ export default {
     },
     modal(){
       return this.$store.state.modal.modal
-    }
+    },
+    name(){
+      return this.$store.state.modal.name
+    },
   },
   components:{
     modal,
@@ -62,7 +66,11 @@ export default {
       this.$router.push({path:'server'});
     },
     createServer(){
+      this.allowA=true;
       this.$store.dispatch('changeStatus',{modal:true,name:'createServer'})
+    },
+    banModal(){
+      this.allowA=false;
     }
   }
 }
@@ -103,6 +111,13 @@ export default {
   color #fff
   border-radius 50%
   background-color $server-color
+  & img 
+    width 50px
+    height 50px
+    border-radius 50%
+    transition all .5s
+    &:hover
+      border-radius 13px;
 .addserver-button
   width 50px
   height 50px

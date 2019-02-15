@@ -3,11 +3,11 @@
     <div class="member-detail" >
         <div class="user-info">
           <div class="avatar">
-            <img src="../../assets/default-avatar.png" alt="">
+            <img :src="member.avatar" alt="">
           </div>
           <div class="name">
-            <div>sdasdasd</div>
-            <div>aaaa</div>
+            <div>{{member.nickname}}</div>
+            <div>{{member.nicknameCount}}</div>
           </div>
           <slot name="crown"></slot>
         </div>
@@ -25,7 +25,8 @@ export default {
   },
   components: {
 
-  }
+  },
+  props:['member']
 }
 </script>
 

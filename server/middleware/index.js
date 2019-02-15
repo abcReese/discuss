@@ -17,7 +17,7 @@ module.exports = (app) => {
           if (ctx.url === '/test') {
               return "*"; // 允许来自所有域名请求
           }
-          return 'http://localhost:9080'; // 这样就能只允许 http://localhost:8080 这个域名的请求了
+          return 'http://localhost:9080'; // 这样就能只允许 http://localhost:9080 这个域名的请求了
       },
       exposeHeaders: ['WWW-Authenticate', 'Server-Authorization'],
       maxAge: 5,
@@ -27,12 +27,14 @@ module.exports = (app) => {
   }))
 
   app.use(bodyparser({
-    enableTypes:['json', 'form', 'text']
+    enableTypes:['json','form', 'text']
   }))
   app.use(json())
   app.use(logger())
   app.use(require('koa-static')(__dirname + '/public'))
-
+  // app.use(koaBody({
+  //   enableTypes:['form' ]
+  // }));
   app.use(views(__dirname + '/views', {
     extension: 'pug'
   }))

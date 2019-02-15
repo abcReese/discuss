@@ -51,8 +51,8 @@ export default {
             self.$socket.emit('getCategory',self.email,data=>{
               console.log(data);
               self.$store.dispatch('setCategory',data);
+              self.$router.push({path:'/home'});
             })
-            self.$router.push({path:'/home'});
           }else{
             console.log(response.data.status)
           }

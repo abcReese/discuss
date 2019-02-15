@@ -46,10 +46,10 @@
             </div>
           </div>
           <div class="auditing-friend friend-operate" v-else>
-            <div class="container accept" >
+            <div class="container accept" @click="accept(item.email)">
               ✔
             </div>
-            <div class="container reject" >
+            <div class="container reject" @click="reject(item.email)">
               <div class="left-line line"></div>
               <div class="right-line line"></div>
             </div>
@@ -97,6 +97,9 @@ export default {
     },
     auditingFriends(){
       return this.$store.state.category.category.friends.auditing;
+    },
+    email(){
+      return this.$store.state.user.user.email;
     }
   },
   components: {
@@ -141,13 +144,27 @@ export default {
     addFriends(){
       this.allowModal=true;
       this.$store.dispatch('changeStatus',{modal:true,name:'addFriends'})
+    },
+    accept(asker){
+      this.$socket.emit('accept',this.email,asker,data=>{
+        console.log(data);
+        this.$store.dispatch('updateFriends',data);
+        this.getStatus(2);
+      })
+    },
+    reject(asker){
+      this.$socket.emit('reject',this.email,asker,data=>{
+        console.log(data);
+        this.$store.dispatch('updateAuditing',data);
+        this.getStatus(2);
+      })
     }
   },
   created(){
      window.addEventListener('resize', this.getStyle);
      this.getStyle();
      this.$store.dispatch('initModal')
-     this.friendsArr=this.$store.state.category.category.friends.all;
+     this.getStatus(0);
   },
   destroyed(){
      window.removeEventListener('resize', this.getStyle)

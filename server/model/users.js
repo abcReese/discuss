@@ -26,7 +26,7 @@ UserSchema.statics={
       let users=await this.where('nickname').equals(user.nickname).exec();
       //如果nickname与其他用户不同，则
       if(users.length===0){
-        user.nicknameCount='0001';
+        doc.nicknameCount='0001';
       }else{
         let count=Number(users[0].nicknameCount)+users.length+1+'';
         for(let i=0;i<4-count.length;i++){
@@ -59,6 +59,15 @@ UserSchema.statics={
   async getUserInfo(email){
     let user=await this.where('email').equals(email).exec();
     return user[0];
+  },
+  async logOut(email){
+    await this.where({
+      email:email
+    })
+    .updateOne({
+      isOnline:false
+    })
+    .exec();
   }
 }
 module.exports = mongoose.model('User', UserSchema);

@@ -9,6 +9,7 @@ var debug = require('debug')('demo:server');
 var http = require('http');
 const socket = require('socket.io');
 const controllers = require('../controllers');
+const UserModel=require('../model/users');
 /**
  * Get port from environment and store in Express.
  */
@@ -105,20 +106,19 @@ io.on('connection',function(socket){
         });
     });
   socket.on('userConnect', function(email,callback) {
-    console.log(userHash);
     userHash[email] = socket.id;
     console.log(email+'succeed connect');
-    console.log(userHash);
     callback();
   });
   //监听客户端正常断开连接
-  socket.on('userDisconnect', function(email) {
+  socket.on('userDisconnect',async function(email) {
     delete userHash[email];
 
     console.log(email+' disconnect');
+    await UserModel.logOut(email);
   });
   //监听客户端异常断开连接
-  socket.on('disconnect', function() {
+  socket.on('disconnect',async function() {
     let email = '';
     Object.keys(userHash)
       .find(key => {
@@ -127,7 +127,7 @@ io.on('connection',function(socket){
           return true;
         }
       });
-
+    await UserModel.logOut(email);
     delete userHash[email];
   });
 })

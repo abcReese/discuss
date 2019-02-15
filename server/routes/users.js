@@ -2,6 +2,9 @@ const router = require('koa-router')()
 const auth = require('../model/auth');
 const users = require('../model/users');
 const mongoose = require('mongoose');
+
+const multer = require('koa-multer');//加载koa-multer模块
+
 const Schema=mongoose.Schema;
 router.prefix('/users')
 
@@ -50,6 +53,27 @@ router.post('/login', async (ctx,next)=>{
   json.status=await users.login(user);
   //send为挂载到ctx上的一个中间件；
   ctx.send(json);
+})
+
+var storage = multer.diskStorage({
+  //文件保存路径
+  destination: function (req, file, cb) {
+    cb(null, 'public/images/')
+  },
+  //修改文件名称
+  filename: function (req, file, cb) {
+    var fileFormat = (file.originalname).split(".");
+    cb(null,Date.now() + "." + fileFormat[fileFormat.length - 1]);
+  }
+})
+//加载配置
+var upload = multer({ storage: storage });
+
+router.post('/uploadImg', upload.single('file'),async (ctx,next)=>{
+
+  ctx.body = {
+    filename: ctx.req.file.filename//返回文件名
+  }
 })
 
 module.exports = router

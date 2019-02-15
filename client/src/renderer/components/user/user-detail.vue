@@ -2,11 +2,11 @@
   <div class="user-detail">
     <div class="user-info">
       <div class="user-avatar">
-        <img src="../../assets/default-avatar.png" alt="">
+        <img :src="user.avatar" alt="">
       </div>
       <div class="user-name">
-        <div>sdasdasd</div>
-        <div>aaaa</div>
+        <div>{{user.nickname}}</div>
+        <div>{{user.nicknameCount}}</div>
       </div>
       <div class="user-setting">
         <div class="micro"></div>
@@ -22,6 +22,11 @@ export default {
   data () {
     return {
 
+    }
+  },
+  computed: {
+    user(){
+      return this.$store.state.user.user;
     }
   },
   components: {

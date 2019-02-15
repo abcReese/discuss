@@ -1,7 +1,7 @@
 <template>
   <div id="catalog">
     <div class="search">
-      <input type="text" placeholder="寻找或开始新的对话">
+      <input type="text" placeholder="" @click="joinServer">
     </div>
     <div class="catalog-line"></div>
     <div class="friends" @click="getFriends" :class="{click:friendsClick,friendshover:hover}" @mouseover="friendsHover" @mouseout="outFriends">
@@ -23,10 +23,15 @@
         </div>
       </div>
     </div>
+    <modal v-show="allowM&&modal">
+      <join-server v-show="name=='joinServer'" @banModal="banModal"></join-server>
+    </modal>
   </div>
 </template>
 
 <script>
+import modal from '../../pages/modal'
+import joinServer from '../../modal/joinServer'
 export default {
   data () {
     return {
@@ -38,12 +43,22 @@ export default {
       friendsClick:true,
       hover:false,
       chat:-1,
+      allowM:false,
       chatIndex:-1,
       showDelete:-1
     }
   },
+  computed: {
+    modal(){
+      return this.$store.state.modal.modal
+    },
+    name(){
+      return this.$store.state.modal.name
+    },
+  },
   components: {
-
+    modal,
+    joinServer
   },
   methods: {
     getStyle(){
@@ -80,6 +95,13 @@ export default {
       this.friendsClick=false;
       this.$router.push({path:'/chat'});
       this.$store.dispatch('changePath','chat');
+    },
+    joinServer(){
+      this.allowM=true;
+      this.$store.dispatch('changeStatus',{modal:true,name:'joinServer'});
+    },
+    banModal(){
+      this.allowM=false;
     }
   },
   created(){
@@ -115,6 +137,9 @@ export default {
     border 1px solid #26272B
     border-radius 5px
     background-color #26272B
+    &:focus
+      outline none
+      border 1px solid $main-blue
 .click
   background-color $content-click
   color #fff

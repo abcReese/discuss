@@ -1,7 +1,7 @@
 <template>
   <div id="server-leftside" v-if="serverIndex===listIndex">
     <div class="server-name-box" @click="editServer">
-      <span class="server-name">a</span>
+      <span class="server-name">{{services[serverIndex].serverName}}</span>
       <div class="arrow" v-if="edit"></div>
       <div class="cancle" v-else></div>
       <ownerset v-if="allow&&owner"></ownerset>
@@ -72,6 +72,9 @@ export default {
     },
     mname(){
       return this.$store.state.modal.name
+    },
+    services(){
+      return this.$store.state.category.category.services
     }
   },
   components: {

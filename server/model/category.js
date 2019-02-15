@@ -31,7 +31,7 @@ CategorySchema.statics={
     await this.where({
       userEmail:email
     })
-    .update({
+    .updateOne({
       categories:category
     }).exec();
   }

@@ -56,6 +56,9 @@ export default {
       this.hover=-1;
     },
     deleteServer(){}
+  },
+  create(){
+    this.$router.push({path:'serversetting'})
   }
 }
 </script>
