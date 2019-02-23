@@ -2,9 +2,11 @@
   <div class="content-box">
     <div class="chat-content" :style="content">
       <div class="chat-begin">
-        <span>这是您与@Jammmmm私信的开头</span>
+        <span v-if="type=='user'">这是您与@{{current.info.nickname}}私信的开头</span>
+        <span v-else>欢迎来到aaa</span>
+        <slot></slot>
       </div>
-    <message v-for="item in messages" :key="item.name"></message>
+    <message v-for="item in messages" :key="item.name" :message="item"></message>
     </div>
     <chat-input></chat-input>
   </div>
@@ -18,14 +20,18 @@ export default {
     return {
       content:{
         height:''
-      },
-      messages:[{index:1},
-      {index:2},
-      {index:3},
-      {index:4},
-      {index:5},
-      {index:6},
-      {index:7}]
+      }
+    }
+  },
+  computed:{
+    type(){
+      return this.$store.state.chat.current.type;
+    },
+    messages(){
+      return this.$store.state.chat.history;
+    },
+    current(){
+      return this.$store.state.chat.current;
     }
   },
   components: {

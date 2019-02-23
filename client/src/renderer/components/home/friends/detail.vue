@@ -21,9 +21,8 @@
     </div>
     <div class="show-friends-content" :style="content">
       <div class="friends-info" 
-        v-for="(item,index) in friendsArr" :key="item.name" 
-         
-        @mouseover="infoHover(index)" 
+        v-for="(item,index) in friendsArr" :key="item.name"   
+        @mouseover="infoHover(index)"  @click="goChat(item)"
         @mouseout="infoOut()">
         <div class="left info-box">
           <div class="avatar">
@@ -46,10 +45,10 @@
             </div>
           </div>
           <div class="auditing-friend friend-operate" v-else>
-            <div class="container accept" @click="accept(item.email)">
+            <div class="container accept" @click.stop="accept(item.email)">
               ✔
             </div>
-            <div class="container reject" @click="reject(item.email)">
+            <div class="container reject" @click.stop="reject(item.email)">
               <div class="left-line line"></div>
               <div class="right-line line"></div>
             </div>
@@ -58,7 +57,7 @@
       </div>
     </div>
      <modal v-show="allowModal&&modal" >
-       <addFriends v-if="name=='addFriends'"></addFriends>
+       <addFriends v-if="name=='addFriends'" @banModal="banModal"></addFriends>
     </modal>
   </div>
 </template>
@@ -100,6 +99,9 @@ export default {
     },
     email(){
       return this.$store.state.user.user.email;
+    },
+    friends(){
+      return this.$store.state.category.category.friends;
     }
   },
   components: {
@@ -116,17 +118,21 @@ export default {
       if(index==0){
         this.already=true;
         this.auditing=false;
-        this.friendsArr=this.allFriends;
+        // this.friendsArr=this.allFriends;
+        this.friendsArr=this.friends.all;
       }else if(index==1){
         this.already=true;
         this.auditing=false;
-        this.friendsArr=this.onlineFriends;
+        // this.friendsArr=this.onlineFriends;
+         this.friendsArr=this.friends.online;
       }else{
-        this.friendsArr=this.auditingFriends;
+        // this.friendsArr=this.auditingFriends;
         this.already=false;
         this.auditing=true;
+         this.friendsArr=this.friends.auditing;
       }
     },
+    
     hoverStyle(index){
       if(this.statusIndex!==index){
         this.hoverIndex=index;
@@ -147,17 +153,44 @@ export default {
     },
     accept(asker){
       this.$socket.emit('accept',this.email,asker,data=>{
-        console.log(data);
         this.$store.dispatch('updateFriends',data);
         this.getStatus(2);
       })
     },
     reject(asker){
       this.$socket.emit('reject',this.email,asker,data=>{
-        console.log(data);
         this.$store.dispatch('updateAuditing',data);
         this.getStatus(2);
       })
+    },
+    banModal(){
+      this.allowModal=false;
+    },
+    goChat(friend){
+      let chat=JSON.parse(localStorage.getItem(this.email))||[];
+      let length=chat.length;
+      let index=chat.findIndex(item=>{
+        return item.friend.email===friend.email;
+      })
+      if(index<0){
+        chat.push({
+          friend:friend
+        });
+        this.$store.dispatch('setChat',chat);
+        localStorage.setItem(this.email,JSON.stringify(chat));
+        this.$store.dispatch('setChatIndex',length);
+      }else{
+        this.$store.dispatch('setChatIndex',index);
+      }
+      this.$store.dispatch('setCurrent',{info:friend,type:'user'});
+      //获取历史信息
+      this.$socket.emit('getHistory',{from:this.email,to:friend.email,type:'user'},data=>{
+        this.$store.dispatch('setHistory',data);
+      })
+
+
+      this.$router.push({path:'chat'});
+      // this.$store.dispatch('initChat');
     }
   },
   created(){
@@ -167,7 +200,8 @@ export default {
      this.getStatus(0);
   },
   destroyed(){
-     window.removeEventListener('resize', this.getStyle)
+    this.getStatus(0)
+    window.removeEventListener('resize', this.getStyle)
    }
 }
 </script>
@@ -272,6 +306,9 @@ $offline = #747F8D
         background-color $main-blue
         & img 
           position absolute
+          width 30px
+          height 30px
+          border-radius 50%
           top 50%
           left 50%
           transform: translate(-50%,-50%);

@@ -24,10 +24,12 @@
     <list v-for="(item,index) in services[serverIndex].members" 
     :key="index"
     :member=item>
-      <div class="server-owner" slot="crown">
+      <div class="server-owner" slot="crown" 
+      v-if="services[serverIndex].ownerEmail==item.email">
         <img src="../../assets/setting-crown.svg" alt="">
       </div>
-      <div class="operate-btn" slot="operate">
+      <div class="operate-btn" slot="operate" @click="kickout(services[serverIndex].gid,item.email,index)"
+      v-if="services[serverIndex].ownerEmail!=item.email">
           踢出服务器
       </div>
     </list>
@@ -52,6 +54,16 @@ export default {
   },
   components: {
     list
+  },
+  methods:{
+    kickout(gid,email,index){
+      let members=this.services[this.serverIndex].members.slice(0);
+      
+      console.log(members[index].email);
+      this.$socket.emit('kickout',gid,index,()=>{
+        this.$store.dispatch('kickout',{serverIndex:this.serverIndex,memberIndex:index});
+      })
+    }
   }
 }
 </script>

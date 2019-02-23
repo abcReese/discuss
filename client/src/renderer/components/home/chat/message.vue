@@ -3,10 +3,10 @@
     <div class="left-avator"></div>
     <div class="right-message">
       <div class="nickname-time">
-        <span class="nickname">Jammmm</span>
-        <span class="time">sdsds</span>
+        <span class="nickname">{{nickname}}&nbsp;&nbsp;{{email}}</span>
+        <span class="time">{{time}}</span>
       </div>
-      <div class="content">adasdasdsadasdasdasdsadsadsad</div>
+      <div class="content">{{message.content}}</div>
     </div>
   </div>
 </template>
@@ -18,9 +18,38 @@ export default {
 
     }
   },
+  computed: {
+    time(){
+      let time=new Date(this.message.time);
+      let year=time.getFullYear(),
+          month=time.getMonth()+1,
+          day=time.getDate(),
+          hour=time.getHours(),
+          minute=time.getMinutes(),
+          second=time.getSeconds();
+      return year+'年'+month+'月'+day+'日'+hour+'时'+minute+'分'+second+'秒';
+    },
+    nickname(){
+      if(this.message.from==this.user.email){
+        return this.user.nickname;
+      }else{
+        return this.current.info.nickname;
+      }
+    },
+    current(){
+      return this.$store.state.chat.current;
+    },
+    user(){
+      return this.$store.state.user.user;
+    },
+    email(){
+      return '<'+this.message.from+'>';
+    }
+  },
   components: {
 
-  }
+  },
+  props:['message']
 }
 </script>
 
@@ -45,7 +74,9 @@ export default {
       & .nickname
         color #fff
       & .time 
+        margin-left 5px
         color #5E6165
+        font-size 13px
 .content 
   word-wrap:break-word
 </style>

@@ -7,7 +7,7 @@
     :member=item>
       <div class="invite-btn operate-btn" slot="operate">
         <div class="agree" @click="agreeJoinServer(item.email,services[serverIndex].gid)">同意</div>
-        <div class="reject">拒绝</div>
+        <div class="reject" @click="rejectKoinServer(item.email,services[serverIndex].gid,index)">拒绝</div>
       </div>
     </list>
   </div>
@@ -37,6 +37,11 @@ export default {
       this.$socket.emit('agreeJoinServer',email,gid,data=>{
         console.log(data);
         this.$store.dispatch('updateServer',{index:this.serverIndex,server:data});
+      })
+    },
+    rejectJoinServer(email,gid,index){
+      this.$socet.emit('rejectJoinServer',email,gid,data=>{
+        this.$store.dispatch('rejectServer',{serverIndex:serverIndex,index:index})
       })
     }
   }

@@ -25,14 +25,46 @@ const mutations = {
     state.category.services[index].apply.push(member);
   },
   updateServer(state,data){
-    console.log(data.server);
-    console.log(state.category.services[data.index]);
     state.category.services[data.index]=data.server;
-    console.log(state.category.services[data.index]);
-    console.log('b');
   },
   updateServerAvatar(state,data){
     state.category.services[data.index].avatar=data.url;
+  },
+  updateServerName(state,data){
+    state.category.services[data.index].serverName=data.serverName;
+  },
+  kickout(state,data){
+    state.category.services[data.serverIndex].members.splice(data.memberIndex,1);
+  },
+  rejectServer(state,data){
+    state.category.services[data.serverIndex].apply.splice(data.index,1);
+  },
+  deleteServer(state,index){
+    state.category.services.splice(index,1);
+  },
+  deleteServetByGid(state,gid){
+    let index=state.category.services.findIndex(ele=>{
+      return ele.gid==gid;
+    })
+    state.category.services.splice(index,1);
+  },
+  createChannel(state,info){
+    if(info.index==1){
+      let length=state.category.services[info.serverIndex].textChannel.length;
+      state.category.services[info.serverIndex].textChannel.push({name:info.channelName,cid:length});
+    }
+    if(info.index==2){
+      let length=state.category.services[info.serverIndex].textChannel.length;
+      state.category.services[info.serverIndex].audioChannel.push({name:info.channelName,cid:length})
+    }
+  },
+  deleteChannel(state,info){
+    if(info.flag==1){
+      state.category.services[info.index].textChannel.splice(info.cid,1);
+    }
+    if(info.flag==2){
+      state.category.services[info.index].audioChannel.splice(info.cid,1);
+    }
   }
 };
 const actions = {
@@ -59,7 +91,27 @@ const actions = {
   },
   updateServerAvatar(context,data){
     context.commit('updateServerAvatar',data);
-
+  },
+  updateServerName(context,data){
+    context.commit('updateServerName',data);
+  },
+  kickout(context,data){
+    context.commit('kickout',data);
+  },
+  deleteServer(context,index){
+    context.commit('deleteServer',index);
+  },
+  deleteServerByGid(context,gid){
+    context.commit('deleteServerByGid',gid);
+  },
+  createChannel(context,info){
+    context.commit('createChannel',info);
+  },
+  deleteChannel(context,info){
+    context.commit('deleteChannel',info);
+  },
+  rejectServer(context,data){
+    context.commit('rejectServer',data);
   }
 }
 export default {

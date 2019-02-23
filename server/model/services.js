@@ -27,11 +27,17 @@ const ServerSchema=mongoose.Schema({
   },
   textChannel:{
     type:Array,
-    default:['general']
+    default:[{
+      cid:0,
+      name:'general'
+    }]
   },
   audioChannel:{
     type:Array,
-    default:['常规']
+    default:[{
+      cid:0,
+      name:'常规'
+    }]
   }
 },{
   timestamps: true
@@ -92,7 +98,36 @@ ServerSchema.statics={
     await this.where({gid}).update({apply:server.apply,members:server.members}).exec();
   },
   async updateAvatar(gid,url){
-    await this.where({gid}).update({avatar:url}).exec();
+    await this.where({gid}).updateOne({avatar:url}).exec();
+  },
+  async updateName(gid,serverName){
+    await this.where({gid}).updateOne({serverName:serverName}).exec();
+  },
+  async deleteServer(gid){
+    await this.where({gid}).deleteOne().exec();
+  },
+  async createTextChannel(gid,channelName){
+    let server=await this.getServer(gid);
+    let length=server.textChannel.length;
+    server.textChannel.push({name:channelName,cid:length});
+    await this.where({gid}).updateOne({textChannel:server.textChannel});
+  },
+  async createAudioChannel(gid,channelName){
+    let server=await this.getServer(gid);
+    let length=server.audioChannel.length;
+    server.audioChannel.push({name:channelName,cid:length});
+    await this.where({gid}).updateOne({audioChannel:server.audioChannel});
+  },
+  async deleteChannel(info){
+    let server=await this.getServer(info.gid);
+    if(info.flag==1){
+      server.textChannel.splice(info.cid,1);
+      await this.where({gid:info.gid}).updateOne({textChannel:server.textChannel});
+    }
+    if(info.flag==2){
+      server.audioChannel.splice(info.cid,1);
+      await this.where({gid:info.gid}).updateOne({audioChannel:server.audioChannel});
+    }
   }
 }
 module.exports = mongoose.model('server', ServerSchema);

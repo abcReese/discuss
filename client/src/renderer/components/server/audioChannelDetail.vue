@@ -1,8 +1,8 @@
 <template>
-  <div class="channel-detail" :class="{aclick:channelClick===index,chover:channelHover==index}"
-  @click="goTextChannel(index)" 
+  <div class="channel-detail" :class="{cclick:channelClick===index,hover:channelHover==index,hide:hide&&channelClick!==index}"
+  @click="goAudioChannel(index)" 
   @mouseover="hover(index)" @mouseout="channelOut" v-if="!(hide&&channelClick!==index)">
-    <div class="channel-left">#{{services[serverIndex].textChannel[index].name}}</div>
+    <div class="channel-left">#{{services[serverIndex].audioChannel[index].name}}</div>
     <div class="channel-right">
       <div class="create-invite" v-if="inviteIndex===index">删除频道
         <div class="invite-arrow"></div>
@@ -21,8 +21,8 @@
     </div>
     <modal v-show="allow&&modal">
       <editChannel v-if="mname==='editChannel'" @changeModal="changeModal"></editChannel>
-      <delete-channel v-if="mname==='deleteChannel'" @changeModal="changeModal"
-      :channelName="channelName" :cid="index" :flag="1"></delete-channel>
+      <delete-channel v-if="mname==='deleteChannel'" @changeModal="changeModal" 
+      :channelName="channelName" :cid="index" :flag="2"></delete-channel>
     </modal>
   </div>
 </template>
@@ -75,11 +75,11 @@ export default {
     settingOut(){
       this.settingIndex=-1;
     },
-    goTextChannel(index){
-      let channelName=this.services[this.serverIndex].textChannel[index].name
+    goAudioChannel(index){
+
+      let channelName=this.services[this.serverIndex].audioChannel[index].name;
       this.channelName=channelName;
       this.$store.dispatch('changeName',channelName);
-
       this.$emit("clickIndex",index);
     },
     hover(index){
@@ -108,91 +108,10 @@ export default {
 </script>
 
 <style lang='stylus'>
-.aclick
+.cclick
   color #fff
-  background-color $content-click
-.chover
-  
+.hover
   color #b3b5b8
-  background-color $content
 .hide
   height 0
-.channel-detail
-  display flex
-  width 220px
-  margin-bottom 2px
-  border-radius 5px
-  &:hover
-    cursor pointer
-    border-radius 5px
-  & .channel-left,& .channel-right
-    height 35px
-  & .channel-left
-    width 70%
-    padding-left 10px
-    line-height 35px
-  & .channel-right
-    display flex
-    position relative
-    width 30%
-    & .invite
-      opacity 1
-    & .create-invite
-      position absolute
-      top -30px
-      left -30px
-      width 100px
-      height 30px
-      line-height 30px
-      padding 0 10px
-      font-size 13px
-      border-radius 5px
-      text-align center
-      color #fff
-      background-color #000
-      & .invite-arrow
-        position absolute
-        border 5px solid transparent
-        left 43px
-        bottom -10px
-        border-top-color #000
-    & .add
-      position absolute
-      left 10px 
-      top 25%
-      width 18px
-      height 18px
-      background url('../../assets/add.svg') center no-repeat
-      &:hover
-        cursor pointer
-        background url('../../assets/add-hover.svg') center no-repeat
-    & .channel-setting
-      position absolute
-      top -30px
-      left 0px
-      width 75px
-      height 30px
-      line-height 30px
-      padding 0 10px
-      font-size 13px
-      border-radius 5px
-      text-align center
-      color #fff
-      background-color #000
-      & .setting-arrow
-        position absolute
-        border 5px solid transparent
-        left 40px
-        bottom -10px
-        border-top-color #000
-    & .setting
-      position absolute
-      right 11px 
-      top 7px
-      width 20px
-      height 20px
-      background url('../../assets/setting.svg') center no-repeat
-      &:hover
-        cursor pointer
-        background url('../../assets/setting-hover.svg') center no-repeat
 </style>

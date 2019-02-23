@@ -4,22 +4,23 @@
       <input type="text" placeholder="" @click="joinServer">
     </div>
     <div class="catalog-line"></div>
-    <div class="friends" @click="getFriends" :class="{click:friendsClick,friendshover:hover}" @mouseover="friendsHover" @mouseout="outFriends">
+    <div class="friends" @click="getFriends" :class="{click:click,friendshover:hover}" @mouseover="friendsHover" @mouseout="outFriends">
       <div class="friends-icon"></div>
       <div class="friends-font" >好友</div>
     </div>
     <div class="friends-message" :style="messageList">
       <span class="message-title">私信</span>
-      <div class="message" :class="{click:chat==index,friendshover:message===index}" @click="goChat(index)"
+      <div class="message" :class="{click:currentIndex==index,friendshover:message===index}" 
+      @click="goChat(index,item)"
       @mouseout="out" @mouseover="messageHover(index)" 
-      v-for="(item,index) in friendsMessages" :key="item.nickname">
+      v-for="(item,index) in chatArr" :key="item.friend.email">
         <div class="message-icon">
-          <img src="../../../assets/default-avatar.png" alt="">
+          <img :src="item.friend.avatar" alt="">
           <div class="status-circle"></div>
         </div>
         <div class="nickname">
-          <span :class="{messagehover:message===index}">nickname</span>
-          <span id="delete" v-if="showDelete==index">x</span>
+          <span :class="{messagehover:message===index}">{{item.friend.nickname}}</span>
+          <span id="delete" v-if="showDelete==index" @click.stop="deleteChat(index)">x</span>
         </div>
       </div>
     </div>
@@ -50,12 +51,36 @@ export default {
   },
   computed: {
     modal(){
-      return this.$store.state.modal.modal
+      return this.$store.state.modal.modal;
     },
     name(){
-      return this.$store.state.modal.name
+      return this.$store.state.modal.name;
     },
+    chatArr(){
+      return this.$store.state.chat.chat;
+    },
+    current(){
+      return this.$store.state.chat.current;
+    },
+    currentIndex(){
+      return this.$store.state.chat.chatIndex;
+    },
+    click(){
+      if(this.$store.state.chat.chatIndex>=0){
+        return false;
+      }else{
+        return true;
+      }
+    },
+    email(){
+      return this.$store.state.user.user.email;
+    }
   },
+  // watch: {
+  //   chatArr(val){
+  //     this.chatArr=this.chatArr
+  //   }
+  // },
   components: {
     modal,
     joinServer
@@ -65,7 +90,7 @@ export default {
       this.messageList.height=window.innerHeight-180+'px';
     },
     messageHover(index){
-      if(this.chat!==index){
+      if(this.chat!==index&&this.currentIndex!==index){
         this.message=index;
       }
       this.showDelete=index;
@@ -80,21 +105,43 @@ export default {
       this.friendsClick=true;
       this.$router.push({path:'detail'})
       this.$store.dispatch('changePath','detail');
+      this.$store.dispatch('setChatIndex',-1);
     },
     friendsHover(){
-      if(!this.friendsClick){
+      if(!this.click){
         this.hover=true;
       }
     },
     outFriends(){
       this.hover=false;
     },
-    goChat(index){
-      this.chat=index;
+    goChat(index,friend){
+      this.$store.dispatch('setChatIndex',index);
       this.message=-1;
+      this.friendsClick=false;
       this.friendsClick=false;
       this.$router.push({path:'/chat'});
       this.$store.dispatch('changePath','chat');
+      this.$store.dispatch('setCurrent',{info:friend.friend,type:'user'});
+      this.$socket.emit('getHistory',{from:this.email,to:friend.friend.email,type:'user'},data=>{
+        this.$store.dispatch('setHistory',data);
+      });
+    },
+    deleteChat(index){
+      let a=this.chatArr.slice(0);
+      let arr=JSON.parse(localStorage.getItem(this.email));
+      if(a.length==1){
+        this.$router.push({path:'detail'});
+      }else if(index==a.length-1&&this.current.info.email===a[index].friend.email){
+        this.$store.dispatch('setCurrent',{info:a[index-1].friend,type:'user'});
+        this.$store.dispatch('setChatIndex',a.length-2);
+      }else if(this.current.info.email===a[index].friend.email){
+        this.$store.dispatch('setCurrent',{info:a[index+1].friend,type:'user'});
+        this.$store.dispatch('setChatIndex',index);
+      }
+      arr.splice(index,1);
+      localStorage.setItem(this.email,JSON.stringify(arr));
+      this.$store.dispatch('setChat',arr);
     },
     joinServer(){
       this.allowM=true;
@@ -107,6 +154,9 @@ export default {
   created(){
     window.addEventListener('resize', this.getStyle);
     this.getStyle();
+    let chat=JSON.parse(localStorage.getItem(this.email))||[];
+    this.$store.dispatch('initChat',chat);
+    this.$store.dispatch('setChatIndex',-1);
    },
   destroyed(){
      window.removeEventListener('resize', this.getStyle)
@@ -195,6 +245,9 @@ export default {
         position absolute
         top 50%
         left 50%
+        border-radius 50%
+        width 30px
+        height 30px
         transform: translate(-50%,-50%)
         z-index 1
       & .status-circle
@@ -216,5 +269,5 @@ export default {
       & span 
         padding-left 10px
       & #delete:hover
-        color #fff
+        color $bright-font
 </style>

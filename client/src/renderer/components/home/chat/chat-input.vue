@@ -5,7 +5,7 @@
         <div>+</div>
       </div>
       <div class="input-message">
-        <input type="text">
+        <input type="text" v-model="message" @keyup.enter="sendMessage">
       </div>
     </div>
   </div>
@@ -15,11 +15,44 @@
 export default {
   data () {
     return {
-
+      message:''
+    }
+  },
+  computed: {
+    user(){
+      return this.$store.state.user.user;
+    },
+    current(){
+      return this.$store.state.chat.current;
     }
   },
   components: {
 
+  },
+  sockets:{
+    recieveText(data){
+      let from=this.current.info.nickname+'<'+this.current.info.email+'>';
+      data.from=from;
+      this.$store.dispatch('addMessage',data);
+    }
+  },
+  methods: {
+    sendMessage(){
+      let chat={}
+      if(this.current.type='user'){
+        chat={
+          from:this.user.email,
+          to:this.current.info.email,
+          message:this.message
+        }
+      }
+      this.$socket.emit('addTextMessage',chat,data=>{
+        let from=this.user.nickname+'<'+this.user.email+'>';
+        data.from=from;
+        this.$store.dispatch('addMessage',data);
+      })
+      this.message='';
+    }
   }
 }
 </script>
@@ -62,9 +95,10 @@ export default {
       height 38px
       & input 
         width 100%
+        font-size 14px
         height 22px
         padding 0
-        color #7F8186
+        color #DCDDDE
         border none
         background-color $content-click
         &:focus

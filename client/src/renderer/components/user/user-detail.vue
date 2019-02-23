@@ -76,6 +76,8 @@ $hover-bgc=#25272A
         position absolute
         top 50%
         left 50%
+        height 30px
+        width 30px
         transform: translate(-50%,-50%)
     & .user-name
       margin-left 10px

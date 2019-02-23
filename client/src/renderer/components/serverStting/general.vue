@@ -3,7 +3,7 @@
     <h3>服务器概览</h3>
     <div>
       <div class="server-icon">
-        <img :src="services[serverIndex].avatar" alt="">
+        <img :src="imgDataUrl||services[serverIndex].avatar" alt="">
       </div>
       <div class="upload-btn">
         <span>上传图片</span>
@@ -11,10 +11,11 @@
       </div>
       <div class="server-name">
         <div>服务器名称</div>
-        <input type="text">
+        <input type="text" v-model="serverName"
+        :placeholder="services[serverIndex].serverName">
       </div>
     </div>
-    <button>保存</button>
+    <button @click="save">保存</button>
   </div>
 </template>
 
@@ -22,7 +23,9 @@
 export default {
   data () {
     return {
-      imgDataUrl:''
+      imgDataUrl:'',
+      form:'',
+      serverName:''
     }
   },
   computed: {
@@ -43,12 +46,24 @@ export default {
     uploadImg(event){
       if(event.target.files.length>0){
         let files = event.target.files[0]; //提交的图片
-        let form = new FormData(); 
+        this.form = new FormData(); 
         
-        form.append('file',files); 
-        //上传图片  
+        this.form.append('file',files); 
+        this.getBase64(event.target,(url)=>{
+			    this.imgDataUrl = 'data:image/png;base64,'+url;   //显示的图片
+		    });
+	    }
+    },
+    save(){
+      if(this.serverName){
+        this.$socket.emit('updateServerName',this.services[this.serverIndex].gid,this.serverName,()=>{
+          this.$store.dispatch('updateServerName',{index:this.serverIndex,serverName:this.serverName});
+        })
+      }
+      //上传图片  
+      if(this.form){
         let self=this;
-        this.$http.post(this.$url+'/users/uploadImg',form,{
+        this.$http.post(this.$url+'/users/uploadImg',this.form,{
           headers:{'Content-Type':'multipart/form-data'}
         }).then(response=>{
           console.log(response.data);
@@ -58,56 +73,54 @@ export default {
           self.$socket.emit('uploadServerAvatar',this.services[this.serverIndex].gid,url,()=>{
             this.$store.dispatch('updateServerAvatar',{index:this.serverIndex,url:url});
           });
+          this.form='';
         })
-		    this.getBase64(event.target,(url)=>{
-			    this.imgDataUrl = 'data:image/png;base64,'+url;   //显示的图片
-		    });
-	    }
+      }
     },
     getBase64(file,callback){//把选择的文件转化为base64格式文件显示
       var maxWidth = 640;
-	        if(file.files && file.files[0]){
-	            var thisFile = file.files[0];
-	            // if(thisFile.size>2019200){
-	            //     // mualert.alertBox("图片不能超过800K");
-	            //     alert("图片不能超过2M");
-	            //     return
-	            // };
-	            var reader = new FileReader();
-	            reader.onload = function(event){
-	                var imgUrl = event.target.result;
-	                var img = new Image();
-	                img.onload = function(){
-	                    var canvasId = 'canvasBase64Imgid',
-	                    canvas = document.getElementById(canvasId);
-	                    if(canvas!=null){document.body.removeChild(canvas);}
-	                    var canvas = document.createElement("canvas");
-	                    canvas.innerHTML = 'New Canvas';
-	                    canvas.setAttribute("id", canvasId);
-	                    canvas.style.display='none';
-	                    document.body.appendChild(canvas);
-	                    canvas.width = this.width;
-	                    canvas.height = this.height;
-	                    var imageWidth = this.width, 
-	                    imageHeight = this.height;
-	                    if (this.width > maxWidth){
-	                        imageWidth = maxWidth;
-	                        imageHeight = this.height * maxWidth/this.width;
-	                        canvas.width = imageWidth;
-	                        canvas.height = imageHeight;
-	                    }
-	                    var context = canvas.getContext('2d');
-	                    context.clearRect(0, 0, imageWidth, imageHeight);
-	                    context.drawImage(this, 0, 0, imageWidth, imageHeight);
-	                    var base64 = canvas.toDataURL('image/png',1);
-	                    var imgbase = base64.substr(22);
-	                    callback(imgbase)
-	                    //this.imgUrl = 
-	                }
-	                img.src = imgUrl;
+	    if(file.files && file.files[0]){
+	      var thisFile = file.files[0];
+	      // if(thisFile.size>2019200){
+	      //     // mualert.alertBox("图片不能超过800K");
+	      //     alert("图片不能超过2M");
+	      //     return
+	      // };
+	      var reader = new FileReader();
+	      reader.onload = function(event){
+	          var imgUrl = event.target.result;
+	          var img = new Image();
+	          img.onload = function(){
+	            var canvasId = 'canvasBase64Imgid',
+	            canvas = document.getElementById(canvasId);
+	            if(canvas!=null){document.body.removeChild(canvas);}
+	            var canvas = document.createElement("canvas");
+	            canvas.innerHTML = 'New Canvas';
+	            canvas.setAttribute("id", canvasId);
+	            canvas.style.display='none';
+	            document.body.appendChild(canvas);
+	            canvas.width = this.width;
+	            canvas.height = this.height;
+	            var imageWidth = this.width, 
+	            imageHeight = this.height;
+	            if (this.width > maxWidth){
+	                imageWidth = maxWidth;
+	                imageHeight = this.height * maxWidth/this.width;
+	                canvas.width = imageWidth;
+	                canvas.height = imageHeight;
 	            }
-	            reader.readAsDataURL(file.files[0]);
-	        }
+	            var context = canvas.getContext('2d');
+	            context.clearRect(0, 0, imageWidth, imageHeight);
+	            context.drawImage(this, 0, 0, imageWidth, imageHeight);
+	            var base64 = canvas.toDataURL('image/png',1);
+	            var imgbase = base64.substr(22);
+	            callback(imgbase)
+	              //this.imgUrl = 
+	          }
+	          img.src = imgUrl;
+	      }
+	      reader.readAsDataURL(file.files[0]);
+	    }
     }
   },
 }
@@ -184,6 +197,7 @@ export default {
     float right
     background-color $main-blue
     border none
+    outline none
     &:hover
       background-color $main-blue-hover
       cursor pointer

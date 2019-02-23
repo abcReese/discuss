@@ -7,7 +7,8 @@
         <input type="text">
       </div>
     </div>
-    <btn>修改</btn>
+    <btn :eventName="'editChannel'"
+    @editChannel="editChannel" @ban="ban">修改</btn>
   </div>
 </template>
 
@@ -21,6 +22,14 @@ export default {
   },
   components: {
     btn
+  },
+  methods: {
+    editChannel(){
+      this.$emit('changeModal');
+    },
+    ban(){
+      this.$emit('changeModal');
+    }
   }
 }
 </script>

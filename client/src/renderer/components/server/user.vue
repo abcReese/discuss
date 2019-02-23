@@ -1,14 +1,14 @@
 <template>
   <div class="user">
     <div class="message-icon">
-      <img src="../../assets/default-avatar.png" alt="">
-      <div class="online-circle" v-if="online"></div>
-      <div class="offline-circle" v-else></div>
+      <img :src="avatar" alt="">
+      <!-- <div class="online-circle" v-if="online"></div>
+      <div class="offline-circle" v-else></div> -->
     </div>
     <div class="nickname">
-      <span>sdasdsss</span>
+      <span>{{nickname}}</span><span class="email">{{info}}</span>
     </div>
-    <div class="owner" v-if="owner">
+    <div class="owner" v-if="email==userEmail">
       <img src="../../assets/crown.svg" alt="" @mouseover="hover" @mouseout="ownerOut">
       <div class="hover-tipe" v-if="ownerHover">
         <span>服务器所有者</span>
@@ -27,6 +27,14 @@ export default {
       ownerHover:false
     }
   },
+  computed: {
+    userEmail(){
+      return this.$store.state.user.user.email;
+    },
+    info(){
+      return '<'+this.email+'>';
+    }
+  },
   components: {
 
   },
@@ -37,7 +45,8 @@ export default {
     ownerOut(){
       this.ownerHover=false;
     }
-  }
+  },
+  props:['email','nickname','avatar']
 }
 </script>
 
@@ -61,6 +70,9 @@ export default {
         position absolute
         top 50%
         left 50%
+        width 30px
+        height 30px
+        border-radius 50%
         transform: translate(-50%,-50%)
         z-index 1
       & .online-circle
@@ -86,6 +98,10 @@ export default {
   & .nickname
     padding-left 10px
     line-height 30px
+    & span:first-child
+      color $bright-font
+    & .email
+      font-size 11px
   & .owner
     position relative
     & img 

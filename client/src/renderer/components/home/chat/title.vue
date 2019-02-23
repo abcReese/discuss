@@ -1,7 +1,7 @@
 <template>
   <div id="chat-title">
     <div class="left-name">
-      <span>@Jammmm</span>
+      <span>{{name}}</span><span>{{account}}</span>
       <div class="status-circle"></div>
     </div>
     <div class="right-icon">
@@ -22,6 +22,24 @@ export default {
 
     }
   },
+  computed: {
+    name(){
+      let current=this.$store.state.chat.current;
+      if(current.type=='user'){
+        return current.info.nickname;
+      }else{
+        let services=this.$store.state.category.category.services;
+        let serverIndex=this.$store.state.serverIndex.index;
+        return services[serverIndex][current.info.type][current.info.index];
+      }
+    },
+    account(){
+      let services=this.$store.state.category.category.services;
+      let serverIndex=this.$store.state.serverIndex.index;
+      let account=this.$store.state.chat.current.info.email||services[serverIndex].gid;
+      return '<'+account+'>';
+    }
+  },
   components: {
 
   }
@@ -33,12 +51,16 @@ export default {
   display flex
   justify-content space-between
   color $content-font
-  padding 5px 100px
+  padding 5px 20px
   height 40px
 .left-name
   line-height 30px
   font-size 20px
   color #fff
+  & span:last-of-type
+    margin-left 10px
+    font-size 15px
+    color  $content-font
 .right-icon
   display flex
   width 80px

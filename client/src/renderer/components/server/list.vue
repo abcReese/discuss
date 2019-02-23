@@ -15,23 +15,28 @@
           <span class="text">文字频道</span>
           <span class="add-channel" v-if="owner" @click.stop="newTextChannel">+</span>
         </div>
-        <textchanneldetail v-for="(item,index) in textChannel" 
+        <textchanneldetail v-for="(item,index) in services[serverIndex].textChannel" 
         :name="item.name" :index="index" :channelClick="channelClick" 
-        :channelHover="channelHover"
+        :channelHover="channelHover" :hide="tHide"
         :key="item.name" @clickIndex="indexChange"
         @hoverIndex="hoverChange" @outIndex="outChange"></textchanneldetail>
       </div>
       <div class="channel audi-ochannel">
         <div class="channel-title" @click="showAudio">
-          <span class="show-all" v-if="audioShow"></span>
+          <span class="show-all" v-if="audioShow" @click="audioHide"></span>
           <span class="hide" v-else></span>
           <span class="text">语音频道</span>
           <span class="add-channel" v-if="owner" @click.stop="newAudioChannel">+</span>
         </div>
+        <audio-channel-detail v-for="(item,index) in services[serverIndex].audioChannel" 
+        :index="index" :channelClick="achannelClick" 
+        :channelHover="achannelHover" :hide="aHide"
+        :key="item.name" @clickIndex="aindexChange"
+        @hoverIndex="ahoverChange" @outIndex="aoutChange"></audio-channel-detail>
       </div>
     </div>
     <modal v-show="modal&&allowModal" >
-      <createChannel v-if="mname=='createChannel'" :choosed="choosed"></createChannel>
+      <createChannel v-if="mname=='createChannel'" :choosed="choosed" @changeModal="changeModal"></createChannel>
     </modal>
   </div>
 </template>
@@ -42,6 +47,7 @@ import ownerset from './ownerSet'
 import textchanneldetail from './textChannelDetail'
 import modal from '../pages/modal'
 import createChannel from '../modal/createChannel'
+import audioChannelDetail from './audioChannelDetail'
 export default {
   data () {
     return {
@@ -53,7 +59,11 @@ export default {
       audioShow:true,
       channelClick:0,
       channelHover:-1,
+      achannelClick:-1,
+      achannelHover:-1,
       choosed:1,
+      tHide:false,
+      aHide:false,
       channelList:{
         height:''
       },
@@ -82,8 +92,8 @@ export default {
     ownerset,
     textchanneldetail,
     modal,
-    createChannel
-     
+    createChannel,
+    audioChannelDetail
   },
   props:["name","listIndex"],
   methods:{
@@ -95,7 +105,7 @@ export default {
     },
     showText(){
       this.textShow=!this.textShow;
-
+      this.tHide=!this.tHide;
     },
     newTextChannel(){
       this.allowModal=true
@@ -109,9 +119,12 @@ export default {
     },
     showAudio(){
       this.audioShow=!this.audioShow;
+      this.aHide=!this.aHide;
     },
     indexChange(index){
       this.channelClick=index;
+      this.achannelClick=-1;
+      this.channelHover=-1;
     },
     hoverChange(index){
       if(this.channelClick!==index){
@@ -121,11 +134,33 @@ export default {
     outChange(){
       this.channelHover=-1;
     },
+    aindexChange(index){
+      this.achannelClick=index;
+      this.channelClick=-1;
+    },
+    ahoverChange(index){
+      if(this.achannelClick!==index){
+        this.achannelHover=index;
+      }
+    },
+    aoutChange(){
+      this.achannelHover=-1;
+    },
     getStyle(){
       this.channelList.height=window.innerHeight-123+'px';
+    },
+    textHide(){
+      this.tHide=!this.tHide;
+    },
+    audioHide(){
+      this.aHide=!this.tHide;
+    },
+    changeModal(){
+      this.allowModal=false;
     }
   },
   created(){
+    this.allowModal=false;
     window.addEventListener('resize', this.getStyle);
     this.getStyle();
    },

@@ -13,24 +13,27 @@ const UserSchema=mongoose.Schema({
 
 UserSchema.statics={
   async register(user){
-    let data=await this.where('email').equals(user.email).exec();
+    let data=await this.where({email:user.email}).exec();
     data=data[0];
+    console.log(data);
     let doc={
       email:user.email,
       nickname:user.nickname,
       password:user.password,
+      nicknameCount:'',
       isOnline:false
     }
     //如果该邮箱没有注册过就进行注册并返回true，否则返回false.
     if(!data){
-      let users=await this.where('nickname').equals(user.nickname).exec();
+      let users=await this.where({nickname:user.nickname}).exec();
       //如果nickname与其他用户不同，则
       if(users.length===0){
         doc.nicknameCount='0001';
       }else{
-        let count=Number(users[0].nicknameCount)+users.length+1+'';
-        for(let i=0;i<4-count.length;i++){
-          count+='0'+count;
+        let count=(Number(users[0].nicknameCount)+users.length+1)+'';
+        console.log(count.length);
+        for(let i=0;i<6-count.length;i++){
+          count='0'+count;
         }
         doc.nicknameCount=count;
       }
@@ -60,6 +63,10 @@ UserSchema.statics={
     let user=await this.where('email').equals(email).exec();
     return user[0];
   },
+  async getUserByName(nickname){
+    let user=await this.where({nickname}).exec();
+    return user;
+  },
   async logOut(email){
     await this.where({
       email:email
@@ -68,6 +75,14 @@ UserSchema.statics={
       isOnline:false
     })
     .exec();
+  },
+  async updateUser(info){
+    await this.where({email:info.email})
+    .updateMany({nickname:info.nickname,nicknameCount:info.count})
+    .exec();
+  },
+  async updateAvatar(email,url){
+    await this.where({email}).updateOne({avatar:url}).exec();
   }
 }
 module.exports = mongoose.model('User', UserSchema);

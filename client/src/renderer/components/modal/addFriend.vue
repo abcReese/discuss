@@ -8,7 +8,7 @@
     </div>
     </div>
     <btn :eventName="'addFriend'"
-    @addFriend="addFriend">发送邀请</btn>
+    @addFriend="addFriend" @ban="banModal">发送邀请</btn>
   </div>
 </template>
 
@@ -31,10 +31,12 @@ export default {
   methods: {
     addFriend(){
       this.$socket.emit('addFriend',{from:this.from,to:this.to},data=>{
-        console.log(data);
-        this.$store.dispatch('addAuditing',data);
+        this.$store.dispatch('updateAuditing',data);
         this.$store.dispatch('initModal');
       })
+    },
+    banModal(){
+      this.$emit('banModal')
     }
   },
 }

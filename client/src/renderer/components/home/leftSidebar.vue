@@ -5,7 +5,7 @@
     <div class="server">
       <div class="server-list icon" v-for="(item,index) in services" :key="item.gid" 
       :class="{current:serverIndex===index}" @click="goServer(index)">
-        <img :src="services[index].avatar" alt="">
+        <img :src="services[index].avatar" alt="" :class="{current:serverIndex===index}">
       </div>
       <div class="addserver-button" @click="createServer">
         +
@@ -44,6 +44,9 @@ export default {
     name(){
       return this.$store.state.modal.name
     },
+    email(){
+      return this.$store.state.user.user.email;
+    }
   },
   components:{
     modal,
@@ -63,6 +66,11 @@ export default {
       }
       this.serverIndex=index;
       this.$store.dispatch('changeIndex',index);
+      
+      this.$socket.emit('getHistory',{to:this.services[index].gid,type:'server'},data=>{
+
+      })
+
       this.$router.push({path:'server'});
     },
     createServer(){

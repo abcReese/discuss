@@ -2,20 +2,22 @@
   <div class="member" :style="memberStyle">
     <div class="online-member">
       <div class="member-box member-status">
-        <span>在线—</span>
+        <span>成员—</span>
       </div>
       <div class="member-list">
-        <user></user>
+        <user v-for="item in services[serverIndex].members" 
+        :key="item.email" :nickname="item.nickname" :email="item.email"
+        :avatar="item.avatar"></user>
       </div>
     </div>
-    <div class="offline-member">
+    <!-- <div class="offline-member">
       <div class="member-box member-status">
         <span>离线—</span>
       </div>
       <div class="member-list">
         <user></user>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -28,6 +30,14 @@ export default {
         height:''
       },
      
+    }
+  },
+  computed: {
+    services(){
+      return this.$store.state.category.category.services;
+    },
+    serverIndex(){
+      return this.$store.state.serverIndex.index;
     }
   },
   components: {

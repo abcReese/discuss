@@ -1,0 +1,59 @@
+const state = {
+  chat:[],
+  current:{
+  },
+  history:[],
+  chatIndex:-1
+};
+
+const mutations = {
+  setChat(state,chat){
+    state.chat=chat;
+  },
+  setCurrent(state,friend){
+    state.current=friend;
+  },
+  initChat(state,chat){
+    state.chat=chat;
+  },
+  setChatIndex(state,index){
+    state.chatIndex=index;
+  },
+  setHistory(state,history){
+    state.history=history;
+  },
+  addMessage(state,message){
+    state.history.push(message);
+  },
+  initMessage(state){
+    state.history=[];
+  }
+};
+const actions = {
+  setChat(context,friend){
+    context.commit('setChat',friend);
+  },
+  setCurrent(context,chat){
+    context.commit('setCurrent',chat);
+  },
+  initChat(context,chat){
+    context.commit('initChat',chat);
+  },
+  setChatIndex(context,index){
+    context.commit('setChatIndex',index);
+  },
+  setHistory(context,history){
+    context.commit('setHistory',history);
+  },
+  addMessage(context,message){
+    context.commit('addMessage',message);
+  },
+  initMessage(context){
+    context.commit('initMessage');
+  }
+}
+export default {
+  state,
+  mutations,
+  actions
+};

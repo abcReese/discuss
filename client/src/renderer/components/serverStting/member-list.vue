@@ -3,11 +3,11 @@
     <div class="member-detail" >
         <div class="user-info">
           <div class="avatar">
-            <img :src="member.avatar" alt="">
+            <img :src="member.avatar||''" alt="">
           </div>
           <div class="name">
-            <div>{{member.nickname}}</div>
-            <div>{{member.nicknameCount}}</div>
+            <div>{{member.nickname||''}}</div>
+            <div>{{member.nicknameCount||''}}</div>
           </div>
           <slot name="crown"></slot>
         </div>

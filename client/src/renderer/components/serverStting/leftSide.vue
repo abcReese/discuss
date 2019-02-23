@@ -9,10 +9,13 @@
       </div>
       <div class="delete-server" @click="deleteServer">删除服务器</div>
     </div>
+    <modal v-show="modal"><delete-server></delete-server></modal>
   </div>
 </template>
 
 <script>
+import modal from '../pages/modal'
+import deleteServer from '../modal/deleteServer'
 export default {
   data () {
     return {
@@ -30,8 +33,17 @@ export default {
       hover:-1
     }
   },
+  computed: {
+    modal(){
+      return this.$store.state.modal.modal
+    },
+    name(){
+      return this.$store.state.modal.name
+    },
+  },
   components: {
-
+    modal,
+    deleteServer
   },
   methods:{
     optionClick(index){
@@ -55,7 +67,9 @@ export default {
     optionOut(){
       this.hover=-1;
     },
-    deleteServer(){}
+    deleteServer(){
+      this.$store.dispatch('changeStatus',{modal:true,name:null});
+    }
   },
   create(){
     this.$router.push({path:'serversetting'})

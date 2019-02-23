@@ -4,11 +4,11 @@
       <div class="my-info">
         <div class="username">
           <span>用户名</span>
-          <span>Jammmm</span>
+          <span>{{user.nickname}}</span>
         </div>
         <div class="email">
           <span>邮箱</span>
-          <span>456456</span>
+          <span>{{user.email}}</span>
         </div>
       </div>
     <div class="edit-btn" @click="edit">编辑</div>
@@ -20,6 +20,11 @@ export default {
   data () {
     return {
 
+    }
+  },
+  computed: {
+    user(){
+      return this.$store.state.user.user;
     }
   },
   components: {

@@ -94,7 +94,7 @@ function onListening() {
 
 global.$userHash = {};
 global.$sockets = io.sockets.sockets;
-
+global.$io=io;
 let userHash = global.$userHash;
 //监听socket
 io.on('connection',function(socket){
