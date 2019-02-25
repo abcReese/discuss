@@ -76,10 +76,18 @@ export default {
       this.settingIndex=-1;
     },
     goTextChannel(index){
-      let channelName=this.services[this.serverIndex].textChannel[index].name
+      let channelName=this.services[this.serverIndex].textChannel[index].name,
+          cid=this.services[this.serverIndex].textChannel[index].cid,
+          gid=this.services[this.serverIndex].gid,
+          to=gid+'-'+cid;
       this.channelName=channelName;
       this.$store.dispatch('changeName',channelName);
 
+      this.$socket.emit('getHistory',{to,type:'server'},data=>{
+ 
+        this.$store.dispatch('setHistory',data);
+      })
+      this.$store.dispatch('setCurrent',{info:{index},type:'server'});
       this.$emit("clickIndex",index);
     },
     hover(index){

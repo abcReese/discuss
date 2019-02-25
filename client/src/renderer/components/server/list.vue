@@ -18,7 +18,7 @@
         <textchanneldetail v-for="(item,index) in services[serverIndex].textChannel" 
         :name="item.name" :index="index" :channelClick="channelClick" 
         :channelHover="channelHover" :hide="tHide"
-        :key="item.name" @clickIndex="indexChange"
+        :key="item.name" @clickIndex="indexChange" 
         @hoverIndex="hoverChange" @outIndex="outChange"></textchanneldetail>
       </div>
       <div class="channel audi-ochannel">

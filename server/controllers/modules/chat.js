@@ -1,23 +1,30 @@
 const ChatModel=require('../../model/chat');
+const ServerModel=require('../../model/services');
 
-async function addTextMessage({from,to,message},callback){
+async function addMessage({from,to,message,messageType},type,callback){
   let time=Date.now();
   let chat={
     from,
     to,
-    type:'text',
+    type:messageType,
     time,
     content:message
   }
   await ChatModel.addMessage(chat);
-  let userHash=global.$userHash;
-  let socketId=userHash[to];
-  let io=global.$io;
-  io.to(socketId).emit('recieveText',chat);
+  if(type=='user'){
+    let userHash=global.$userHash;
+    let socketId=userHash[to];
+    let io=global.$io;
+    io.to(socketId).emit('recieveText',chat);
+  }else{
+
+  }
   callback(chat);
 }
 
-async function getHistory({from,to,type},callback){
+
+
+async function getHistory({from,to,gid,type},callback){
   let history=[];
   if(type=='user'){
     let arr1=await ChatModel.getHistory(from,to);
@@ -27,12 +34,15 @@ async function getHistory({from,to,type},callback){
       return a.time-b.time;
     })
   }else{
-    console.log(to);
+    history=await ChatModel.getServerHistory(to);
+    history.sort((a,b)=>{
+      return a.time-b.time;
+    })
   }
   callback(history);
 }
 
 module.exports={
-addTextMessage,
+addMessage,
 getHistory
 }

@@ -6,12 +6,30 @@
         <span class="nickname">{{nickname}}&nbsp;&nbsp;{{email}}</span>
         <span class="time">{{time}}</span>
       </div>
-      <div class="content">{{message.content}}</div>
+      <div class="content" v-if="message.type=='text'">
+        {{message.content}}
+      </div>
+      <chatimage v-else-if="message.type=='image'">
+        <a :href="$url+'/upload/'+message.content" :download="message.content">{{message.content}}</a>
+      </chatimage>
+      <chataudio v-else-if="message.type=='audio'">
+        <a :href="$url+'/upload/'+message.content" :download="message.content">{{message.content}}</a>
+      </chataudio>
+      <chatvideo v-else-if="message.type=='video'">
+        <a :href="$url+'/upload/'+message.content" :download="message.content">{{message.content}}</a>
+      </chatvideo>
+      <file v-else>
+        <a :href="$url+'/upload/'+message.content" :download="message.content">{{message.content}}</a>
+      </file>
     </div>
   </div>
 </template>
 
 <script>
+import chatimage from './message-type/image'
+import chataudio from './message-type/audio'
+import chatvideo from './message-type/video'
+import file from './message-type/file'
 export default {
   data () {
     return {
@@ -47,7 +65,10 @@ export default {
     }
   },
   components: {
-
+    chatimage,
+    chataudio,
+    chatvideo,
+    file
   },
   props:['message']
 }
@@ -79,4 +100,9 @@ export default {
         font-size 13px
 .content 
   word-wrap:break-word
+  & a
+    color $bright-font
+    text-decoration none
+    &:hover
+      text-decoration underline
 </style>

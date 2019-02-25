@@ -46,6 +46,12 @@ export default {
     },
     email(){
       return this.$store.state.user.user.email;
+    },
+    chatArr(){
+      return this.$store.state.chat.chat;
+    },
+    chatIndex(){
+      return this.$store.state.chat.chatIndex;
     }
   },
   components:{
@@ -54,6 +60,14 @@ export default {
   },
   methods:{
     backHome(){
+     
+      let to=this.chatArr[this.chatIndex].friend.email;
+
+      this.$store.dispatch('setCurrent',{info:this.chatArr[this.chatIndex].friend,type:'user'});
+      this.$socket.emit('getHistory',{from:this.email,to,type:'user'},data=>{
+        this.$store.dispatch('setHistory',data);
+      })
+
       this.$store.dispatch('changeIndex',-1);
       this.home=true;
       if(this.$route.path!=='/detail'||this.$route.path!=='/chat'){
@@ -67,9 +81,13 @@ export default {
       this.serverIndex=index;
       this.$store.dispatch('changeIndex',index);
       
-      this.$socket.emit('getHistory',{to:this.services[index].gid,type:'server'},data=>{
-
+      let gid=this.services[index].gid,
+          to=gid+'-'+this.services[index].textChannel[0].cid;
+      this.$socket.emit('getHistory',{to,type:'server'},data=>{
+        this.$store.dispatch('setHistory',data);
       })
+
+      this.$store.dispatch('setCurrent',{info:{index:0},type:'server'});
 
       this.$router.push({path:'server'});
     },

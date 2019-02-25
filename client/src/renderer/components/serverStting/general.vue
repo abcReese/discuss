@@ -63,13 +63,13 @@ export default {
       //上传图片  
       if(this.form){
         let self=this;
-        this.$http.post(this.$url+'/users/uploadImg',this.form,{
+        this.$http.post(this.$url+'/users/uploadFile',this.form,{
           headers:{'Content-Type':'multipart/form-data'}
         }).then(response=>{
           console.log(response.data);
           let filename=response.data.filename;
           console.log(filename);
-          let url='http://localhost:3000/images/'+filename;
+          let url='http://localhost:3000/upload/'+filename;
           self.$socket.emit('uploadServerAvatar',this.services[this.serverIndex].gid,url,()=>{
             this.$store.dispatch('updateServerAvatar',{index:this.serverIndex,url:url});
           });

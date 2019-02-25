@@ -24,6 +24,10 @@ ChatSchema.statics={
   async getHistory(from,to){
     let history=await this.where({from,to}).exec();
     return history;
+  },
+  async getServerHistory(to){
+    let history=await this.where({to}).exec();
+    return history;
   }
 }
 
