@@ -67,7 +67,7 @@
     width: 100%;
     height:23px;
     line-height : 23px;
-    color: $font-color;
+    color: $bright-font;
     -webkit-app-region : drag;
     background-color : $home
     & .title
@@ -85,6 +85,8 @@
     &:hover
       background-color : #2B2D30;
       cursor : pointer;
+    &:last-of-type:hover
+      background-color $delete-red
 .minimize
   font-size 20px
 .maximize

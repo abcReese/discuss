@@ -37,10 +37,16 @@ export default {
 
   },
   sockets:{
-    recieveText(data){
-      let from=this.current.info.nickname+'<'+this.current.info.email+'>';
-      data.from=from;
-      this.$store.dispatch('addMessage',data);
+    recieveMessage(data){
+      // let from=this.current.info.nickname+'<'+this.current.info.email+'>';
+      // data.from=from;
+      if(data.from===this.current.info.email){
+        this.$store.dispatch('addMessage',data);
+      }else if(this.current.type=='server'){
+        console.log('aa')
+        this.$store.dispatch('addMessage',data);
+      }
+      
     }
   },
   methods: {
@@ -135,7 +141,7 @@ export default {
 
 <style lang='stylus'>
 .input-box
-  height 100px
+  height 95px
   padding-top 30px
   padding-right 20px
   border-top 1px solid $chat-cutoff

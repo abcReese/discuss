@@ -55,6 +55,9 @@ export default {
     },
     email(){
       return this.$store.state.user.user.email;
+    },
+    current(){
+      return this.$store.state.chat.current;
     }
   },
   components: {
@@ -79,14 +82,22 @@ export default {
       let channelName=this.services[this.serverIndex].textChannel[index].name,
           cid=this.services[this.serverIndex].textChannel[index].cid,
           gid=this.services[this.serverIndex].gid,
+          oldgid=this.services[this.serverIndex].gid,
+          oldRoom=this.current.info.index,
           to=gid+'-'+cid;
       this.channelName=channelName;
       this.$store.dispatch('changeName',channelName);
 
       this.$socket.emit('getHistory',{to,type:'server'},data=>{
- 
+        
         this.$store.dispatch('setHistory',data);
+        this.$socket.emit('leave',{email:this.email,to:oldgid+'-'+oldRoom},()=>{
+          this.$socket.emit('join',{email:this.email,to},()=>{
+            
+          })
+        })
       })
+
       this.$store.dispatch('setCurrent',{info:{index},type:'server'});
       this.$emit("clickIndex",index);
     },

@@ -11,13 +11,15 @@ async function addMessage({from,to,message,messageType},type,callback){
     content:message
   }
   await ChatModel.addMessage(chat);
+  const userHash = global.$userHash;
+  const fromSocketId = userHash[chat.from];
+  const toSocketId = userHash[chat.to];
+  const socket = global.$sockets[fromSocketId];
   if(type=='user'){
-    let userHash=global.$userHash;
-    let socketId=userHash[to];
-    let io=global.$io;
-    io.to(socketId).emit('recieveText',chat);
+    socket.to(toSocketId).emit('recieveMessage',chat);
   }else{
-
+    console.log(fromSocketId);
+    socket.broadcast.to(to).emit('recieveMessage',chat);
   }
   callback(chat);
 }
@@ -34,6 +36,7 @@ async function getHistory({from,to,gid,type},callback){
       return a.time-b.time;
     })
   }else{
+
     history=await ChatModel.getServerHistory(to);
     history.sort((a,b)=>{
       return a.time-b.time;
@@ -42,7 +45,30 @@ async function getHistory({from,to,gid,type},callback){
   callback(history);
 }
 
+async function join({email,to},callback){
+  const userHash = global.$userHash;
+  const userSocketId = userHash[email];
+  const socket = global.$sockets[userSocketId];
+
+  socket.join(to);
+  console.log('join room: '+to);
+  callback();
+}
+
+async function leave({email,to},callback){
+  console.log(email,to);
+  const userHash = global.$userHash;
+  const userSocketId = userHash[email];
+  const socket = global.$sockets[userSocketId];
+
+  socket.leave(to);
+  console.log('leave room: '+to);
+  callback();
+}
+
 module.exports={
 addMessage,
-getHistory
+getHistory,
+join,
+leave
 }

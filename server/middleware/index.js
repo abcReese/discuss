@@ -14,10 +14,11 @@ module.exports = (app) => {
 
   app.use(cors({
       origin: function (ctx) {
-          if (ctx.url === '/test') {
-              return "*"; // 允许来自所有域名请求
-          }
-          return 'http://localhost:9080'; // 这样就能只允许 http://localhost:9080 这个域名的请求了
+          // if (ctx.url === '/test') {
+          //     return "*"; // 允许来自所有域名请求
+          // }
+          // return 'http://localhost:9080'; // 这样就能只允许 http://localhost:9080 这个域名的请求了
+          return "*";
       },
       exposeHeaders: ['WWW-Authenticate', 'Server-Authorization'],
       maxAge: 5,

@@ -1,6 +1,6 @@
 <template>
   <div id="server-content" v-if="serverIndex===index">
-    <div class="content-title">{{channelName}}</div>
+    <div class="content-title"><span>{{channelName}}</span> <span>{{gid}}</span></div>
     <div class="chat-box">
       <chat-content class='a'></chat-content>
       <!-- <div class="member" :style="member"></div> -->
@@ -25,6 +25,9 @@ export default {
     },
     channelName(){
       return this.$store.state.channelName.name;
+    },
+    gid(){
+      return '<'+this.$store.state.category.category.services[this.serverIndex].gid+'>';
     }
   },
   components: {
@@ -53,6 +56,9 @@ export default {
   color $bright-font
   font-weight 600
   border-bottom 1px solid $home
+  & span:last-of-type
+    margin-left 5px
+    font-size 13px
 .a
   margin-right 240px
 .chat-box
