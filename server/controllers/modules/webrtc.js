@@ -48,7 +48,6 @@ async function rtcOffer({from,to,offerSdp}){
   const toSocketId = userHash[to];
   const socket = global.$sockets[fromSocketId];
 
-  console.log(`offerSdp: ${offerSdp}`);
 
   socket.to(toSocketId)
     .emit('rtcOffer', {
@@ -63,7 +62,6 @@ async function rtcAnswer({from,to,answerSdp}){
   const toSocketId = userHash[to];
   const socket = global.$sockets[fromSocketId];
 
-  console.log(`answerSdp: ${answerSdp}`);
 
   socket.to(toSocketId)
     .emit('rtcAnswer', {

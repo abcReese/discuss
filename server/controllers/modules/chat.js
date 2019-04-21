@@ -36,7 +36,6 @@ async function getHistory({from,to,gid,type},callback){
       return a.time-b.time;
     })
   }else{
-
     history=await ChatModel.getServerHistory(to);
     history.sort((a,b)=>{
       return a.time-b.time;

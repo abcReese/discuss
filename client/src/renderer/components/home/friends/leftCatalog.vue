@@ -120,12 +120,12 @@ export default {
       this.message=-1;
       this.friendsClick=false;
       this.friendsClick=false;
-      this.$router.push({path:'/chat'});
       this.$store.dispatch('changePath','chat');
       this.$store.dispatch('setCurrent',{info:friend.friend,type:'user'});
       this.$socket.emit('getHistory',{from:this.email,to:friend.friend.email,type:'user'},data=>{
         this.$store.dispatch('setHistory',data);
       });
+      this.$router.push({path:'/chat'});
     },
     deleteChat(index){
       let a=this.chatArr.slice(0);

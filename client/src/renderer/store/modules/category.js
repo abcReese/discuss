@@ -65,6 +65,12 @@ const mutations = {
     if(info.flag==2){
       state.category.services[info.index].audioChannel.splice(info.cid,1);
     }
+  },
+  deleteOnline(state,index){
+    state.category.friends.online.splice(index,1);
+  },
+  deleteFriend(state,index){
+    state.category.friends.all.splice(index,1);
   }
 };
 const actions = {
@@ -112,6 +118,12 @@ const actions = {
   },
   rejectServer(context,data){
     context.commit('rejectServer',data);
+  },
+  deleteOnline(context,index){
+    context.commit('deleteOnline',index);
+  },
+  deleteFriend(context,index){
+    context.commit('deleteFriend',index);
   }
 }
 export default {

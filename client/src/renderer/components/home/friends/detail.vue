@@ -37,11 +37,14 @@
         </div>
         <div class="right info-box"  :class="{friend:hover==index}">
           <div class="already-friend friend-operate" v-if="already">
-            <div class="video container">
+            <!-- <div class="video container">
               <img src="../../../assets/video.png" alt="">
             </div>
             <div class="audio container">
               <img src="../../../assets/audio.png" alt="">
+            </div> -->
+            <div class="container" @click.stop="deleteFriend(index)">
+              <span>x</span>
             </div>
           </div>
           <div class="auditing-friend friend-operate" v-else>
@@ -150,6 +153,36 @@ export default {
     addFriends(){
       this.allowModal=true;
       this.$store.dispatch('changeStatus',{modal:true,name:'addFriends'})
+    },
+    deleteFriend(index){
+      console.log(this.friendsArr[index].email);
+      this.$socket.emit('deleteFriend',{user:this.email,friend:this.friendsArr[index].email},()=>{
+        for(let i=0;i<this.allFriends.length;i++){
+          if(this.allFriends[i].email===this.friendsArr[index].email){
+            this.$store.dispatch('deleteFriend',i);
+            break;
+          }
+        }
+        for(let i=0;i<this.onlineFriends.length;i++){
+          if(this.onlineFriends[i].email===this.friendsArr[index].email){
+            this.$store.dispatch('deleteOnline',i);
+            break;
+          }
+        }
+        let chatArr=JSON.parse(localStorage.getItem(this.email))||[],
+            chatIndex=-1;
+        for(let i=0;i<chatArr.length;i++){
+          if(chatArr[i].friend.email===this.friendsArr[index].email){
+            chatIndex=i;
+            break;
+          }
+        }
+        if(chatIndex>=0){
+          chatArr.splice(chatIndex,1);
+          this.$store.dispatch('setChat',chatArr);
+          localStorage.setItem(this.email,JSON.stringify(chatArr));
+        }
+      })
     },
     accept(asker){
       this.$socket.emit('accept',this.email,asker,data=>{
@@ -338,12 +371,15 @@ $offline = #747F8D
           position relative
           width 35px
           height 35px
+          line-height 25px
           margin-left 10px
           padding 5px
           border-radius 5px
           background-color $home
           &:hover
-            background-color #4F545C
+            // background-color #4F545C
+            background-color $delete-red
+            color #fff
           & img 
             position absolute
             top 50%

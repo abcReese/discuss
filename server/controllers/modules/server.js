@@ -24,6 +24,7 @@ async function joinServer(email,gid,callback){
   if(result){
     let user=UserModel.getUserInfo(email);
   }
+  callback();
 }
 
 async function agreeJoinServer(email,gid,callback){
@@ -64,7 +65,6 @@ async function updateServerName(gid,serverName,callback){
 
 async function kickout(gid,index,callback){
   let server=await ServerModel.getServer(gid);
-  console.log(server);
   server.members.splice(index,1);
   await ServerModel.updateServer(gid,server);
   callback();

@@ -21,7 +21,7 @@
         :key="item.name" @clickIndex="indexChange" 
         @hoverIndex="hoverChange" @outIndex="outChange"></textchanneldetail>
       </div>
-      <div class="channel audi-ochannel">
+      <!-- <div class="channel audi-ochannel">
         <div class="channel-title" @click="showAudio">
           <span class="show-all" v-if="audioShow" @click="audioHide"></span>
           <span class="hide" v-else></span>
@@ -33,7 +33,7 @@
         :channelHover="achannelHover" :hide="aHide"
         :key="item.name" @clickIndex="aindexChange"
         @hoverIndex="ahoverChange" @outIndex="aoutChange"></audio-channel-detail>
-      </div>
+      </div> -->
     </div>
     <modal v-show="modal&&allowModal" >
       <createChannel v-if="mname=='createChannel'" :choosed="choosed" @changeModal="changeModal"></createChannel>

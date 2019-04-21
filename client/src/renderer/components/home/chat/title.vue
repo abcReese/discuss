@@ -13,16 +13,21 @@
       </div>
     </div>
     <div class="black-box" :class="{'video-height':videoHeight,'audio-height':audioHeight}">
-      <div class="video-container" v-if="videoHeight">
-        <div class="local-video-container">
+      <!-- <div class="video-container" v-if="videoHeight">
+        <div class="local-video">
           <video class="local-video" ref="local-video" autoplay></video>
         </div>
         <div class="remote-video">
           <video class="remote-video" ref="remote-video" autoplay></video>
         </div>
-      </div>
-      <div class="audio-container">
-        <audio src=""></audio>
+      </div> -->
+      <div class="audio-container" v-if="audioHeight">
+        <div class="local-audio">
+          <audio class="local-video" ref="local-audio" autoplay></audio>
+        </div>
+        <div class="remote-audio">
+          <audio class="remote-audio" ref="remote-audio" autoplay></audio>
+        </div>
       </div>
       <span class="leave" @click.stop="leave" v-if="videoHeight||audioHeight">离开语音</span>
     </div>
@@ -79,16 +84,16 @@ export default {
   },
   watch: {
     localStream() {
-      this.$refs['local-video'].srcObject = this.localStream;
+      this.$refs['local-audio'].srcObject = this.localStream;
     },
     remoteStream() {
-      this.$refs['remote-video'].srcObject = this.remoteStream;
+      this.$refs['remote-audio'].srcObject = this.remoteStream;
     }
   },
   components: {
 
   },
-  mounted () {
+  beforeMount() {
     let rtcConfig = {
         // use free stun server
        iceServers: [
@@ -128,13 +133,12 @@ export default {
       }
       this.pc.close();
     },
-    rtcAnseer(answerSdp){
+    rtcAnswer({answerSdp}){
       let answer = new RTCSessionDescription({
           type: 'answer',
           sdp: answerSdp
         });
         console.log('pc start setRemoteDescription');
-        console.log(answer);
         this.pc
           .setRemoteDescription(answer)
           .then(() => {
@@ -144,8 +148,7 @@ export default {
             console.log(`pc setRemoteDescription failed：${err.toString()}`);
           });
     },
-    rtcCandidate(candidateSdp){
-      console.log(candidateSdp);
+    rtcCandidate({candidateSdp}){
       let candidate = new RTCIceCandidate({
           candidate: candidateSdp
         });
@@ -159,14 +162,13 @@ export default {
             console.error('pc addIceCandidate failed');
           });
     },
-    rtcOffer(offerSdp){
+    rtcOffer({offerSdp}){
       let offer = new RTCSessionDescription({
           type: 'offer',
           sdp: offerSdp
         });
       let pc=this.pc;
         console.log('pc start setRemoteDescription');
-        console.log(offer);
 
         pc
           .setRemoteDescription(offer)
@@ -225,7 +227,15 @@ export default {
     audioChat(){
       this.videoHeight=false;
       this.audioHeight=!this.audioHeight;
-      this.localStream=null;
+      if(!this.localStream){
+        this.$socket.emit('videoInvite',{from:this.user.email,to:this.current.info.email});
+      }else{
+        let tracks=this.localStream.getTracks();
+        for(let i=0;i<tracks.length;i++){
+          tracks[i].stop();
+        }
+        this.localStream=null;
+      }
     },
     leave(){
       this.videoHeight=false;
@@ -238,16 +248,13 @@ export default {
         this.localStream=null;
         this.$socket.emit('closeVideo',{from:this.user.email,to:this.current.info.email});
       }
-      this.pc.close();
+  
     },
     loadLocalVideo(){
       return new Promise((resolve, reject) => {
         let constraints = {
           audio: true,
-          video: {
-            width: 273.34,
-            height: 300
-          }
+          video:false
         };
         
       
@@ -306,8 +313,7 @@ export default {
     createOffer() {
       let pc = this.pc;
       let offerOptions = {
-        offerToReceiveAudio: 1,
-        offerToReceiveVideo: 1
+        offerToReceiveAudio: 1
       };
       if (!pc) {
         return;

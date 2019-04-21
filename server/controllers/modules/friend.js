@@ -103,8 +103,30 @@ async function getFriends(category){
   return categories.friends;
 }
 
+async function deleteFriend({user,friend},callback){
+    let userCate=await CategoryModel.getCategory(user);
+    let friendCate=await CategoryModel.getCategory(friend);
+    let index;
+    index=userCate[0].friends.all.indexOf(friend);
+    userCate[0].friends.all.splice(index,1);
+    index=userCate[0].friends.online.indexOf(friend);
+    userCate[0].friends.online.splice(index,1);
+
+    index=friendCate[0].friends.all.indexOf(user);
+    friendCate[0].friends.all.splice(index,1);
+    index=friendCate[0].friends.online.indexOf(user);
+    friendCate[0].friends.online.splice(index,1);
+
+    await CategoryModel.updateCategory(user,userCate[0]);
+    await CategoryModel.updateCategory(friend,friendCate[0]);
+
+    callback();
+}
+
+
 module.exports={
   addFriend,
   accept,
-  reject
+  reject,
+  deleteFriend
 }
