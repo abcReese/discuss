@@ -29,7 +29,7 @@
         <img src="../../assets/setting-crown.svg" alt="">
       </div>
       <div class="operate-btn" slot="operate" @click="kickout(services[serverIndex].gid,item.email,index)"
-      v-if="services[serverIndex].ownerEmail!=item.email">
+      v-if="services[serverIndex].ownerEmail!=item.email&&services[serverIndex].ownerEmail==user.email">
           踢出服务器
       </div>
     </list>
@@ -50,6 +50,9 @@ export default {
     },
     services(){
       return this.$store.state.category.category.services;
+    },
+    user(){
+      return this.$store.state.user.user;
     }
   },
   components: {

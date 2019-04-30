@@ -6,8 +6,12 @@ async function addFriend({from,to},callback){
   fromCategory=fromCategory[0];
   if(fromCategory.friends.all.indexOf(to)!==-1){
     console.log('already friend');
-    callback('');
+    callback('already friend');
     return ;
+  }
+  if(fromCategory.friends.auditing.indexOf(to)!==-1){
+    callback('alread sent request');
+    return;
   }
   let user=await UserModel.getUserInfo(to);
   if(user){
@@ -26,6 +30,14 @@ async function addFriend({from,to},callback){
     await CategoryModel.updateCategory(from,fromCategory);
     await CategoryModel.updateCategory(to,toCategory);
     let auditingFriend=await UserModel.getUserInfo(to);
+
+    const userHash = global.$userHash;
+    const fromSocketId = userHash[from];
+    const toSocketId = userHash[to];
+    const socket = global.$sockets[fromSocketId];
+
+    let userInfo= await UserModel.getUserInfo(from);
+    socket.to(toSocketId).emit('friendRequest',userInfo);
     callback(auditingFriend);
   }else{
     callback('');
@@ -48,6 +60,13 @@ async function accept(accepter,asker,callback){
   let accepterFriends=await getFriends(accepterCate);
   let askerFriends=await getFriends(askerCate);
 
+  const userHash = global.$userHash;
+  const askerSocketId = userHash[asker];
+  const accpterSocketId = userHash[accepter];
+  const socket = global.$sockets[accpterSocketId];
+
+  let userInfo= await UserModel.getUserInfo(accepter);
+  socket.to(askerSocketId).emit('acceptFriend',userInfo);
   callback(accepterFriends);
 }
 
@@ -120,6 +139,12 @@ async function deleteFriend({user,friend},callback){
     await CategoryModel.updateCategory(user,userCate[0]);
     await CategoryModel.updateCategory(friend,friendCate[0]);
 
+    const userHash = global.$userHash;
+    const userSocketId = userHash[user];
+    const friendSocketId = userHash[friend];
+    const socket = global.$sockets[userSocketId];
+
+    socket.to(friendSocketId).emit('deleteFriend',user);
     callback();
 }
 

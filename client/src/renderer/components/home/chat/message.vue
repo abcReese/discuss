@@ -1,13 +1,15 @@
 <template>
-  <div class="chat-message">
-    <div class="left-avator"></div>
+  <div class="chat-message" :class="{'self-message':message.from==user.email}">
+    <div class="left-avator">
+      <img :src="avatar" alt="">
+    </div>
     <div class="right-message">
-      <div class="nickname-time">
+      <div class="nickname-time" :class="{'self-message':message.from==user.email}">
         <span class="nickname">{{nickname}}&nbsp;&nbsp;{{email}}</span>
         <span class="time">{{time}}</span>
       </div>
       <div class="content" v-if="message.type=='text'">
-        {{message.content}}
+        <span :class="{'self-content':message.from==user.email}">{{message.content}}</span>
       </div>
       <chatimage v-else-if="message.type=='image'">
         <a :href="$url+'/upload/'+message.content" :download="message.content">{{message.content}}</a>
@@ -33,7 +35,6 @@ import file from './message-type/file'
 export default {
   data () {
     return {
-
     }
   },
   computed: {
@@ -62,6 +63,13 @@ export default {
     },
     email(){
       return '<'+this.message.from+'>';
+    },
+    avatar(){
+      if(this.message.from==this.user.email){
+        return this.user.avatar;
+      }else{
+        return this.current.info.avatar;
+      }
     }
   },
   components: {
@@ -76,21 +84,27 @@ export default {
 
 <style lang="stylus">
 .chat-message
+  display flex
   min-height 80px
   padding 20px 10px 20px 0
   border-bottom 1px solid $chat-cutoff
   &>div
     min-height 40px
   & .left-avator
-    float left 
     width 40px
+    height 40px
     border-radius 50%
-    background $main-blue url('../../../assets/default-avatar.png') no-repeat center
+    background $main-blue no-repeat center
+    & img 
+      height 40px
+      width 40px
+      border-radius 50%
   & .right-message
-    margin-left 60px
+    margin 0 20px
     & div
       min-height 20px
     & .nickname-time
+      display flex
       line-height 20px
       & .nickname
         color #fff
@@ -98,6 +112,12 @@ export default {
         margin-left 5px
         color #5E6165
         font-size 13px
+.self-message
+  flex-direction row-reverse
+.self-content
+  float right
+  margin-right 20px
+  margin-top 5px
 .content 
   word-wrap:break-word
   & a

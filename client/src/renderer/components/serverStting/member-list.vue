@@ -61,6 +61,8 @@ export default {
           top 50%
           left 50%
           transform: translate(-50%,-50%)
+          height 40px
+          width 40px
       & .name
         margin-left 15px
         height 40px

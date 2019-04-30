@@ -16,7 +16,7 @@
 export default {
   data () {
     return {
-      message:''
+      message:'',
     }
   },
   computed: {
@@ -43,7 +43,7 @@ export default {
       if(data.from===this.current.info.email){
         this.$store.dispatch('addMessage',data);
       }else if(this.current.type=='server'){
-        console.log('aa')
+      
         this.$store.dispatch('addMessage',data);
       }
       
@@ -71,7 +71,8 @@ export default {
           from:this.user.email,
           to:to,
           message:this.message,
-          messageType:'text'
+          messageType:'text',
+          nickname:this.user.nickname
         }
       }
       this.$socket.emit('addMessage',chat,type,data=>{

@@ -111,6 +111,45 @@ export default {
     modal,
     addFriends
   },
+  sockets:{
+    friendRequest(data){
+      let auditing=this.friends.auditing.slice(0);
+      auditing.push(data);
+      this.$store.dispatch('updateAuditing',auditing);
+    },
+    acceptFriend(data){
+      let friends={};
+      friends.all=this.friends.all.slice(0),
+      friends.online=this.friends.online.slice(0);
+      friends.auditing=this.friends.auditing.slice(0);
+      friends.all.push(data);
+      friends.online.push(data);
+      this.$store.dispatch('updateFriends',friends);
+    },
+    deleteFriend(data){
+      let friends={};
+      friends.all=this.friends.all.slice(0),
+      friends.online=this.friends.online.slice(0);
+      friends.auditing=this.friends.auditing.slice(0);
+      let i=-1;
+      friends.all.forEach((ele,index)=>{
+        if(ele.email==data){
+          i=index;
+        }
+      })
+      friends.all.splice(i,1);
+      i=-1;
+      friends.online.forEach((ele,index)=>{
+        if(ele.email==data){
+          i=index;
+        }
+      })
+      if(i!==-1){
+        friends.online.splice(i,1);
+      }
+      this.$store.dispatch('updateFriends',friends);
+    }
+  },
   methods: {
     getStyle(){
       this.content.height=window.innerHeight-120+'px';
@@ -127,12 +166,12 @@ export default {
         this.already=true;
         this.auditing=false;
         // this.friendsArr=this.onlineFriends;
-         this.friendsArr=this.friends.online;
+        this.friendsArr=this.friends.online;
       }else{
         // this.friendsArr=this.auditingFriends;
         this.already=false;
         this.auditing=true;
-         this.friendsArr=this.friends.auditing;
+        this.friendsArr=this.friends.auditing;
       }
     },
     

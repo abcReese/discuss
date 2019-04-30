@@ -104,6 +104,7 @@ export default {
         })
       }
       this.$socket.emit('getHistory',{to,type:'server'},data=>{
+        console.log(data);
         this.$store.dispatch('setHistory',data);
         this.$socket.emit('join',{email:this.email,to},()=>{
             

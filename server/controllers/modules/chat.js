@@ -1,7 +1,8 @@
 const ChatModel=require('../../model/chat');
 const ServerModel=require('../../model/services');
+const UserModel=require('../../model/users');
 
-async function addMessage({from,to,message,messageType},type,callback){
+async function addMessage({from,to,message,messageType,nickname},type,callback){
   let time=Date.now();
   let chat={
     from,
@@ -18,7 +19,8 @@ async function addMessage({from,to,message,messageType},type,callback){
   if(type=='user'){
     socket.to(toSocketId).emit('recieveMessage',chat);
   }else{
-    console.log(fromSocketId);
+    let user = await UserModel.getUserInfo(from);
+    chat.user=user;
     socket.broadcast.to(to).emit('recieveMessage',chat);
   }
   callback(chat);
@@ -36,11 +38,19 @@ async function getHistory({from,to,gid,type},callback){
       return a.time-b.time;
     })
   }else{
-    history=await ChatModel.getServerHistory(to);
-    history.sort((a,b)=>{
-      return a.time-b.time;
-    })
+    // let message=await ChatModel.getServerHistory(to);
+    // message.sort((a,b)=>{
+    //   return a.time-b.time;
+    // })
+    // for(let i=0;i<message.length;i++){
+    //   history[i]={};
+    //   let user=await UserModel.getUserInfo(message[i].from);
+    //   history[i].from=user;
+    //   history[i].message=message[i];
+    //   console.log(history[i]);
+    // }
   }
+  console.log(history);
   callback(history);
 }
 

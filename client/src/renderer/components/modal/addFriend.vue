@@ -23,6 +23,9 @@ export default {
   computed: {
     from(){
       return this.$store.state.user.user.email;
+    },
+    friends(){
+      return this.$store.state.category.category.friends;
     }
   },
   components: {
@@ -31,7 +34,11 @@ export default {
   methods: {
     addFriend(){
       this.$socket.emit('addFriend',{from:this.from,to:this.to},data=>{
-        this.$store.dispatch('updateAuditing',data);
+        // console.log('aaa');
+        // console.log(this.friends);
+        // let auditing=this.friends.auditing.slice(0);
+        // auditing.push(data);
+        // this.$store.dispatch('updateAuditing',auditing);
         this.$store.dispatch('initModal');
       })
     },

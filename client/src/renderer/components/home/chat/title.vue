@@ -95,7 +95,7 @@ export default {
   },
   beforeMount() {
     let rtcConfig = {
-        // use free stun server
+        // 使用免费的stun服务器，用于击穿NAT获取主机的网络地址
        iceServers: [
           { urls: 'stun:stun.voxgratia.org' },
           { urls: 'stun:stun.voipstunt.com' },
@@ -104,8 +104,8 @@ export default {
         ]
       };
     let pc = null;
-    pc = new RTCPeerConnection(rtcConfig);
-    this.pc = pc;
+    pc = new RTCPeerConnection(rtcConfig);//新建RTCPeerConnection实例
+    this.pc = pc;//把该实例赋值给Vue实例中的属性
   },
   sockets:{
     call(from){

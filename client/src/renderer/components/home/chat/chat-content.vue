@@ -6,7 +6,9 @@
         <span v-else>欢迎来到aaa</span>
         <slot></slot>
       </div>
+    
     <message v-for="item in messages" :key="item.name" :message="item"></message>
+    
     </div>
     <chat-input></chat-input>
   </div>
