@@ -1,6 +1,6 @@
 <template>
   <div id="server-content" v-if="serverIndex===index">
-    <div class="content-title"><span>{{channelName}}</span> <span>{{gid}}</span></div>
+    <div class="content-title"> <span>{{gid}}</span></div>
     <div class="chat-box">
       <chat-content class='a'></chat-content>
       <!-- <div class="member" :style="member"></div> -->

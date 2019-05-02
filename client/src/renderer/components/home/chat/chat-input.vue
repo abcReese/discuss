@@ -40,13 +40,14 @@ export default {
     recieveMessage(data){
       // let from=this.current.info.nickname+'<'+this.current.info.email+'>';
       // data.from=from;
-      if(data.from===this.current.info.email){
-        this.$store.dispatch('addMessage',data);
-      }else if(this.current.type=='server'){
-      
-        this.$store.dispatch('addMessage',data);
-      }
-      
+      // if(data.from===this.current.info.email){
+      //   this.$store.dispatch('addMessage',data);
+      // }else if(this.current.type=='server'){
+      //   console.log(data);
+      //   this.$store.dispatch('addMessage',data);
+      // }
+      console.log(data);
+      this.$store.dispatch('addMessage',data);
     }
   },
   methods: {

@@ -18,11 +18,19 @@ async function addMessage({from,to,message,messageType,nickname},type,callback){
   const socket = global.$sockets[fromSocketId];
   if(type=='user'){
     socket.to(toSocketId).emit('recieveMessage',chat);
+    callback(chat);
   }else{
     let user = await UserModel.getUserInfo(from);
-    chat.user=user;
-    socket.broadcast.to(to).emit('recieveMessage',chat);
+    // chat.user=user;
+    data={
+      message:chat,
+      from:user
+    }
+
+    socket.broadcast.to(to).emit('recieveMessage',data);
+    callback(data);
   }
+  console.log(chat);
   callback(chat);
 }
 
@@ -38,19 +46,17 @@ async function getHistory({from,to,gid,type},callback){
       return a.time-b.time;
     })
   }else{
-    // let message=await ChatModel.getServerHistory(to);
-    // message.sort((a,b)=>{
-    //   return a.time-b.time;
-    // })
-    // for(let i=0;i<message.length;i++){
-    //   history[i]={};
-    //   let user=await UserModel.getUserInfo(message[i].from);
-    //   history[i].from=user;
-    //   history[i].message=message[i];
-    //   console.log(history[i]);
-    // }
+    let message=await ChatModel.getServerHistory(to);
+    message.sort((a,b)=>{
+      return a.time-b.time;
+    })
+    for(let i=0;i<message.length;i++){
+      history[i]={};
+      let user=await UserModel.getUserInfo(message[i].from);
+      history[i].from=user;
+      history[i].message=message[i];
+    }
   }
-  console.log(history);
   callback(history);
 }
 

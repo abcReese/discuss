@@ -20,9 +20,18 @@ async function createServer({
 
 async function joinServer(email,gid,callback){
   let result=await ServerModel.joinServer(email,gid);
-  console.log(result);
+
   if(result){
-    let user=UserModel.getUserInfo(email);
+    let user=await UserModel.getUserInfo(email);
+    const userHash = global.$userHash;
+    const fromSocketId = userHash[email];
+    const toSocketId = userHash[result];
+    const socket = global.$sockets[fromSocketId];
+
+    let data={};
+    data.user=user;
+    data.gid=gid;
+    socket.to(toSocketId).emit('updateApply',data);
   }
   callback();
 }
@@ -39,13 +48,17 @@ async function agreeJoinServer(email,gid,callback){
   applyCate=applyCate[0];
   applyCate.services.push(gid);
   await CategoryModel.updateCategory(email,applyCate);
-  // const userHash=global.$userHash;
-  // const applyId=userHash[email];
-  // io.to(applyId).emit('addServer',server);
-  callback(res);
+
+  const userHash = global.$userHash;
+  const fromSocketId = userHash[server.ownerEmail];
+  const toSocketId = userHash[email];
+  const socket = global.$sockets[fromSocketId];
+  let user=await UserModel.getUserInfo(email);
+  socket.to(toSocketId).emit('agreeJoinServer',res);
+  callback({gid,user});
 }
 
-async function rejectServer(email,gid,callback){
+async function rejectJoinServer(email,gid,callback){
   let server=await ServerModel.getServer(gid);
   let index=server.apply.indexOf(email);
   server.apply.splice(index,1);
@@ -55,18 +68,56 @@ async function rejectServer(email,gid,callback){
 
 async function uploadServerAvatar(gid,url,callback){
   await ServerModel.updateAvatar(gid,url);
+
+  let server=await ServerModel.getServer(gid);
+  let members=server.members;
+  let userHash=global.$userHash;
+  const fromSocketId = userHash[server.ownerEmail];
+  const socket = global.$sockets[fromSocketId];
+  for(let i=0;i<members.length;i++){
+    if(members[i]!==server.ownerEmail){
+      const userId=userHash[members[i]];
+      socket.to(userId).emit('updateServerAvatar',{gid,url});
+    }
+  }
+
   callback();
 }
 
 async function updateServerName(gid,serverName,callback){
   await ServerModel.updateName(gid,serverName);
+
+  let server=await ServerModel.getServer(gid);
+  let members=server.members;
+  let userHash=global.$userHash;
+  const fromSocketId = userHash[server.ownerEmail];
+  const socket = global.$sockets[fromSocketId];
+  for(let i=0;i<members.length;i++){
+    if(members[i]!==server.ownerEmail){
+      const userId=userHash[members[i]];
+      socket.to(userId).emit('updateServerName',{gid,serverName});
+    }
+  }
   callback();
 }
 
 async function kickout(gid,index,callback){
   let server=await ServerModel.getServer(gid);
+  let email=server.members[index];
+  let category=await CategoryModel.getCategory(email);
+  let i=category.services.findIndex((ele,index)=>{
+    return ele.gid==gid;
+  })
+  category.services.splice(index,1);
   server.members.splice(index,1);
+  await CategoryModel.updateCategory(email,category);
   await ServerModel.updateServer(gid,server);
+
+  let userHash=global.$userHash;
+  const fromSocketId = userHash[server.ownerEmail];
+  const toSocketId=userHash[email];
+  const socket = global.$sockets[fromSocketId];
+  socket.to(toSocketId).emit('deleteServer',gid);
   callback();
 }
 
@@ -74,10 +125,12 @@ async function deleteServer(gid,callback){
   let server=await ServerModel.getServer(gid);
   let members=server.members;
   let userHash=global.$userHash;
+  const fromSocketId = userHash[server.ownerEmail];
+  const socket = global.$sockets[fromSocketId];
   for(let i=0;i<members.length;i++){
     if(members[i]!==server.ownerEmail){
       const userId=userHash[members[i]];
-      io.to(userId).emit('deleteServer',gid);
+      socket.to(userId).emit('deleteServer',gid);
       await deleteServerInCate(members[i],gid);
     }
   }
@@ -115,7 +168,7 @@ module.exports={
   createServer,
   joinServer,
   agreeJoinServer,
-  rejectServer,
+  rejectJoinServer,
   uploadServerAvatar,
   updateServerName,
   kickout,

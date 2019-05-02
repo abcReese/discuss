@@ -61,6 +61,41 @@ export default {
     modal,
     createServer
   },
+  sockets:{
+    agreeJoinServer(server){
+      this.$store.dispatch('addServer',server);
+    },
+    updateApply(user,index){
+      let info={};
+      info.index=index;
+      info.member=user;
+      this.$store.dispatch('addServerApply',info);
+    },
+    deleteServer(gid){
+      this.$store.dispatch('deleteServerByGid',gid);
+      if(this.$route.path=='/server'&&this.services[this.serverIndex].gid==gid){
+        this.$router.push({path:'detail'});
+      }
+    },
+    updateServerAvatar(data){
+      console.log(data);
+      let info={}
+      info.url=data.url;
+      info.index=this.services.findIndex((ele,index)=>{
+        return ele.gid==data.gid;
+      })
+      this.$store.dispatch('updateServerAvatar',info);
+    },
+    updateServerName(data){
+      console.log(data);
+      let info={}
+      info.serverName=data.serverName;
+      info.index=this.services.findIndex((ele,index)=>{
+        return ele.gid==data.gid;
+      })
+      this.$store.dispatch('updateServerName',info);
+    }
+  },
   methods:{
     backHome(){
       if(this.serverIndex>=0){
@@ -104,7 +139,6 @@ export default {
         })
       }
       this.$socket.emit('getHistory',{to,type:'server'},data=>{
-        console.log(data);
         this.$store.dispatch('setHistory',data);
         this.$socket.emit('join',{email:this.email,to},()=>{
             

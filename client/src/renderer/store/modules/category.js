@@ -21,8 +21,8 @@ const mutations = {
   initCategory(state){
     state.category={};
   },
-  addServerApply(state,index,member){  
-    state.category.services[index].apply.push(member);
+  addServerApply(state,info){  
+    state.category.services[info.index].apply.push(info.member);
   },
   updateServer(state,data){
     state.category.services[data.index]=data.server;
@@ -36,16 +36,25 @@ const mutations = {
   kickout(state,data){
     state.category.services[data.serverIndex].members.splice(data.memberIndex,1);
   },
+  agreeServer(state,data){
+    state.category.services[data.serverIndex].apply.splice(data.index,1);
+    state.category.services[data.serverIndex].members.push(data.user);
+  },
   rejectServer(state,data){
     state.category.services[data.serverIndex].apply.splice(data.index,1);
   },
   deleteServer(state,index){
     state.category.services.splice(index,1);
   },
-  deleteServetByGid(state,gid){
-    let index=state.category.services.findIndex(ele=>{
-      return ele.gid==gid;
-    })
+  deleteServerByGid(state,gid){
+    let index=-1,
+        services=state.category.services;
+    for(let i=0;i<services.length;i++){
+      if(services[i].gid==gid){
+        index=i;
+        break;
+      }
+    }
     state.category.services.splice(index,1);
   },
   createChannel(state,info){
@@ -89,8 +98,8 @@ const actions = {
   initCategory(context){
     context.commit('initCategory');
   },
-  addServerApply(context,index,member){
-    context.commit('addServerApply',index,member);
+  addServerApply(context,info){
+    context.commit('addServerApply',info);
   },
   updateServer(context,data){
     context.commit('updateServer',data);
@@ -115,6 +124,9 @@ const actions = {
   },
   deleteChannel(context,info){
     context.commit('deleteChannel',info);
+  },
+  agreeServer(context,data){
+    context.commit('agreeServer',data);
   },
   rejectServer(context,data){
     context.commit('rejectServer',data);

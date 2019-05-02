@@ -43,7 +43,7 @@ export default {
         index=this.serverIndex==0?0:this.serverIndex-1;
         this.$store.dispatch('changeIndex',index)
         this.$store.dispatch('initModal')
-        this.$router.push({path:'server'})
+        this.$router.push({path:'detail'})
       });
     }
   },

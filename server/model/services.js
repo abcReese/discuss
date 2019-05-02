@@ -70,8 +70,12 @@ ServerSchema.statics={
     for(let i=0;i<server.members.length;i++){
       let user=await UserModel.getUserInfo(server.members[i]);
       let userApply=await UserModel.getUserInfo(server.apply[i]);
-      members.push(user);
-      apply.push(userApply);
+      if(user){
+        members.push(user);
+      }
+      if(userApply){
+        apply.push(userApply);
+      }
     }
     server.members=members;
     server.apply=apply;
@@ -89,7 +93,7 @@ ServerSchema.statics={
         apply:server.apply
       })
       .exec();
-      return true;
+      return server.ownerEmail;
     }else{
       return false;
     }

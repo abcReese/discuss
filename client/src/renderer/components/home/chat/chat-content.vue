@@ -1,13 +1,24 @@
 <template>
   <div class="content-box">
-    <div class="chat-content" :style="content">
+    <div class="chat-content" :style="content" v-if="type=='user'">
       <div class="chat-begin">
-        <span v-if="type=='user'">这是您与@{{current.info.nickname}}私信的开头</span>
-        <span v-else>欢迎来到aaa</span>
+        <span >这是您与@{{current.info.nickname}}私信的开头</span>
+        
         <slot></slot>
       </div>
     
-    <message v-for="item in messages" :key="item.name" :message="item"></message>
+     <message v-for="item in messages" :key="item.name" :message="item"></message>
+    
+    </div>
+    <div class="chat-content" :style="content" v-else>
+      <div class="chat-begin">
+        <span >欢迎来到aaa</span>
+        <slot></slot>
+      </div>
+     
+       <server-message v-for="item in messages" :key="item.name" :message="item"></server-message>
+     
+  
     
     </div>
     <chat-input></chat-input>
@@ -17,6 +28,7 @@
 <script>
 import message from './message'
 import chatInput from './chat-input'
+import serverMessage from './server-message'
 export default {
   data () {
     return {
@@ -38,7 +50,8 @@ export default {
   },
   components: {
     message,
-    chatInput
+    chatInput,
+    serverMessage
   },
   methods: {
     scrollToBottom(){

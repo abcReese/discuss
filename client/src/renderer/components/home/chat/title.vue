@@ -61,9 +61,9 @@ export default {
       if(current.type=='user'){
         return current.info.nickname;
       }else{
-        // let services=this.$store.state.category.category.services;
-        // let serverIndex=this.$store.state.serverIndex.index;
-        // return services[serverIndex][current.info.type][current.info.index];
+        let services=this.$store.state.category.category.services;
+        let serverIndex=this.$store.state.serverIndex.index;
+        return services[serverIndex].serverName;
       }
     },
     account(){
