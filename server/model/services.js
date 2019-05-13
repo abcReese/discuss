@@ -113,7 +113,8 @@ ServerSchema.statics={
   async createTextChannel(gid,channelName){
     let server=await this.getServer(gid);
     let length=server.textChannel.length;
-    server.textChannel.push({name:channelName,cid:length});
+    let c=server.textChannel[length-1].cid+1;
+    server.textChannel.push({name:channelName,cid:c});
     await this.where({gid}).updateOne({textChannel:server.textChannel});
   },
   async createAudioChannel(gid,channelName){

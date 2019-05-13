@@ -152,6 +152,14 @@ async function deleteServerInCate(email,gid){
 async function createChannel(info,callback){
   if(info.index==1){
     await ServerModel.createTextChannel(info.gid,info.channelName);
+    let server = await ServerModel.getServer(info.gid);
+    let length = server.textChannel.length;
+    const userHash = global.$userHash;
+    const fromSocketId = userHash[server.ownerEmail];
+    const socket = global.$sockets[fromSocketId];
+    for(let i=0;i<server.members.length;i++){
+      socket.to(userHash[server.members[i]]).emit('addChannel',{gid:info.gid,channel:server.textChannel[length-1]});
+    }
   }
   if(info.index==2){
     await ServerModel.createAudioChannel(info.gid,info.channelName);
@@ -161,6 +169,18 @@ async function createChannel(info,callback){
 
 async function deleteChannel(info,callback){
   console.log(info);
+  let server = await ServerModel.getServer(info.gid);
+  console.log(server);
+  let index=server.textChannel.findIndex(ele=>{
+    return ele.cid==info.cid;
+  })
+  let length = server.textChannel.length;
+  const userHash = global.$userHash;
+  const fromSocketId = userHash[server.ownerEmail];
+  const socket = global.$sockets[fromSocketId];
+  for(let i=0;i<server.members.length;i++){
+    socket.to(userHash[server.members[i]]).emit('deleteChannel',{gid:info.gid,ChannelIndex:index});
+  }
   await ServerModel.deleteChannel(info);
   callback();
 }

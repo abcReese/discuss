@@ -12,6 +12,7 @@
         <img src="../../../assets/audio.png" alt="">
       </div>
     </div>
+    
     <div class="black-box" :class="{'video-height':videoHeight,'audio-height':audioHeight}">
       <!-- <div class="video-container" v-if="videoHeight">
         <div class="local-video">
@@ -28,6 +29,14 @@
         <div class="remote-audio">
           <audio class="remote-audio" ref="remote-audio" autoplay></audio>
         </div>
+        <div class="info">
+          <div class="user-info">
+            <img :src="user.avatar" alt="">
+          </div>
+          <div class="firned-info" v-show="accept">
+            <img :src="current.info.avatar" alt="">
+          </div>
+        </div>
       </div>
       <span class="leave" @click.stop="leave" v-if="videoHeight||audioHeight">离开语音</span>
     </div>
@@ -43,6 +52,7 @@
 
 <script >
 import 'webrtc-adapter';
+
 export default {
   data () {
     return {
@@ -52,7 +62,8 @@ export default {
       localStream:null,
       remoteStream:null,
       pc:null,
-      a:''
+      a:'',
+      accept:false
     }
   },
   computed: {
@@ -91,7 +102,7 @@ export default {
     }
   },
   components: {
-
+    
   },
   beforeMount() {
     let rtcConfig = {
@@ -115,6 +126,7 @@ export default {
     inviteResponse(result){
       this.videoHeight=result;
       if(result){
+        this.accept=true;
         this.loadLocalVideo().then(() => {
           this.initContent();
           this.createOffer();
@@ -390,6 +402,25 @@ export default {
         width 100%
         height 300px
         object-fit cover
+  & .audio-container
+    width 100%
+    height 100%
+    & .info
+      display flex
+      justify-content center
+      align-items center
+      width 100%
+      height 100%
+      & div
+        width 50px
+        height 50px
+        margin 10px
+        background-color $main-blue
+        border-radius 50%
+      & img
+        height 50px
+        width 50px
+        border-radius 50%
   & .leave
     position absolute
     left 50%

@@ -55,6 +55,9 @@ export default {
     },
     current(){
       return this.$store.state.chat.current;
+    },
+    friends(){
+      return this.$store.state.category.category.friends;
     }
   },
   components:{
@@ -94,6 +97,40 @@ export default {
         return ele.gid==data.gid;
       })
       this.$store.dispatch('updateServerName',info);
+    },
+    addChannel(info){
+      console.log(info);
+      this.$store.dispatch('addChannel',info);
+    },
+    deleteChannel(info){
+      console.log(info);
+      let serverIndex=this.services.findIndex(ele=>{
+        return ele.gid==info.gid;
+      })
+      console.log(serverIndex);
+      this.$store.dispatch('deleteChannel',{index:serverIndex,cid:info.channelIndex,flag:1});
+    },
+    friendOnline(friend){
+      this.$store.dispatch('addOnline',friend);
+    },
+    friendOffline(friend){
+      let index=-1;
+      console.log(this.friends);
+      for(let i=0;i<this.friends.online.length;i++){
+        if(friend==this.friends.online[i].email){
+          index=i;
+          break;
+        }
+      }
+      this.$store.dispatch('deleteOnline',index);
+    },
+    updateAvatar(info){
+      console.log(info);
+      this.$store.dispatch('updateFriendAvatar',info);
+    },
+    updateFriendName(info){
+      console.log(info);
+      this.$store.dispatch('updateFriendName',info);
     }
   },
   methods:{

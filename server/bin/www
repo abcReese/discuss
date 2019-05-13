@@ -106,7 +106,7 @@ io.on('connection',function(socket){
           socket.on(key, controllers[module][key]);
         });
     });
-  socket.on('userConnect', function(email,callback) {
+  socket.on('userConnect', async function(email,callback) {
     userHash[email] = socket.id;
     console.log(email+'succeed connect');
     console.log(userHash);

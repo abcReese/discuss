@@ -67,6 +67,12 @@ const mutations = {
       state.category.services[info.serverIndex].audioChannel.push({name:info.channelName,cid:length})
     }
   },
+  addChannel(state,info){
+    let index=state.category.services.findIndex(ele=>{
+      return ele.gid==info.gid;
+    })
+    state.category.services[index].textChannel.push(info.channel);
+  },
   deleteChannel(state,info){
     if(info.flag==1){
       state.category.services[info.index].textChannel.splice(info.cid,1);
@@ -76,10 +82,56 @@ const mutations = {
     }
   },
   deleteOnline(state,index){
+    let all=state.category.friends.all;
+    let online=state.category.friends.online;
+    for(let i=0;i<all.length;i++){
+      if(all[i].email==online[index].email){
+        all[i].isOnline=false;
+        break;
+      }
+    }
     state.category.friends.online.splice(index,1);
   },
   deleteFriend(state,index){
     state.category.friends.all.splice(index,1);
+  },
+  updateFriendAvatar(state,info){
+    let index=state.category.friends.all.findIndex(ele=>{
+      return ele.friend==info.email;
+    })
+    let friend=state.category.friends.all[index];
+    friend.avatar=info.url;
+    state.category.friends.all.splice(index,1)
+    state.category.friends.all.unshift(friend);
+    index=state.category.friends.online.findIndex(ele=>{
+      return ele.email==info.email;
+    })
+    state.category.friends.online.splice(index,1);
+    state.category.friends.online.unshift(friend);
+  },
+  updateFriendName(state,info){
+    let index=state.category.friends.all.findIndex(ele=>{
+      return ele.friend==info.email;
+    })
+    let friend=state.category.friends.all[index];
+    friend.nickname=info.nickname;
+    state.category.friends.all.splice(index,1)
+    state.category.friends.all.unshift(friend);
+    index=state.category.friends.online.findIndex(ele=>{
+      return ele.email==info.email;
+    })
+    state.category.friends.online.splice(index,1);
+    state.category.friends.online.unshift(friend);
+  },
+  addOnline(state,friend){
+    state.category.friends.online.push(friend);
+    let all=state.category.friends.all;
+    for(let i=0;i<all.length;i++){
+      if(all[i].email==friend.email){
+        all[i].isOnline=true;
+        break;
+      }
+    }
   }
 };
 const actions = {
@@ -125,6 +177,9 @@ const actions = {
   deleteChannel(context,info){
     context.commit('deleteChannel',info);
   },
+  addChannel(context,info){
+    context.commit('addChannel',info);
+  },
   agreeServer(context,data){
     context.commit('agreeServer',data);
   },
@@ -136,6 +191,15 @@ const actions = {
   },
   deleteFriend(context,index){
     context.commit('deleteFriend',index);
+  },
+  addOnline(context,friend){
+    context.commit('addOnline',friend);
+  },
+  updateFriendAvatar(context,info){
+    context.commit('updateFriendAvatar',info);
+  },
+  updateFriendName(context,info){
+    context.commit('updateFriendName',info);
   }
 }
 export default {

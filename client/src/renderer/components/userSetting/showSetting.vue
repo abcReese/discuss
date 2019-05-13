@@ -1,6 +1,8 @@
 <template>
   <div class="my-account account">
-    <div class="my-avatar"></div>
+    <div class="my-avatar">
+      <img :src="user.avatar" alt="">
+    </div>
       <div class="my-info">
         <div class="username">
           <span>用户名</span>
@@ -48,6 +50,10 @@ export default {
     height 100px
     border-radius 50%
     background-color $main-blue
+    & img 
+      width 100px
+      height 100px
+      border-radius 50%
   & .my-info
     width 320px
     height 100px

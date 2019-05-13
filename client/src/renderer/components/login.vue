@@ -48,6 +48,9 @@ export default {
             self.$socket.emit('getUserInfo',self.email,data=>{
               self.$store.dispatch('setUser',data);
             });
+            self.$socket.emit('online',self.email,data=>{
+              console.log('online');
+            })
             self.$socket.emit('getCategory',self.email,data=>{
               console.log(data);
               self.$store.dispatch('setCategory',data);

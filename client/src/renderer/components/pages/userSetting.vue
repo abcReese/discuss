@@ -65,6 +65,9 @@ export default {
       this.settingStyle.width=window.innerWidth+'px';
     },
     logOut(){
+      this.$socket.emit('offline',this.email,data=>{
+        console.log(data);
+      });
       this.$router.push({path:'/'});
       this.$socket.emit('userDisconnect',this.email);
     }
